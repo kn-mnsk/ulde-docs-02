@@ -1,0 +1,38 @@
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background: #1e1e1e;
+  color: white;
+  padding: 1.5rem;
+}
+
+.sidebar a {
+  display: block;
+  color: #ccc;
+  margin: 0.5rem 0;
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  color: white;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.header {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1.5rem;
+}
+
+.doc-body {
+  line-height: 1.6;
+}
+

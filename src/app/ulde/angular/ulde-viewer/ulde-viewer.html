@@ -1,0 +1,29 @@
+<div class="ulde-viewer">
+
+  @if (loading()) {
+    <div class="ulde-viewer__loading">
+      Loading…
+    </div>
+  } @else {
+
+    @if (error()) {
+      <div class="ulde-viewer__error">
+        {{ error() }}
+      </div>
+    } @else {
+
+      @if (rendered()) {
+        <div
+          #contentRoot
+          class="ulde-viewer__content"
+          [innerHTML]="rendered()?.content"
+        ></div>
+
+        <app-ulde-debug-overlay />
+      }
+
+    }
+
+  }
+
+</div>

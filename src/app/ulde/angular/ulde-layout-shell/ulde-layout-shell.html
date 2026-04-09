@@ -1,0 +1,18 @@
+<!-- <p>ulde-layout-shell works!</p> -->
+<div class="layout">
+  <aside class="sidebar">
+    <h2>Docs</h2>
+    <nav>
+      <a routerLink="/">Home</a>
+      <a routerLink="/getting-started">Getting Started</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <header class="header">
+      <h1>ULDE Documentation</h1>
+    </header>
+
+    <article class="doc-body" [innerHTML]="html()"></article>
+  </main>
+</div>

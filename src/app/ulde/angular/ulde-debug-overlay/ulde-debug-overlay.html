@@ -1,0 +1,15 @@
+<p>ulde-debug-overlay works!</p>
+@if (diagnostics().length > 0) {
+  <div class="ulde-debug-overlay">
+    <h4 class="ulde-debug-overlay__title">ULDE Diagnostics</h4>
+
+    <ul class="ulde-debug-overlay__list">
+      @for (d of diagnostics(); track d) {
+        <li class="ulde-debug-overlay__item ulde-debug-overlay__item--{{ d.level }}">
+          <span class="ulde-debug-overlay__plugin">{{ d.pluginId }}</span>
+          <span class="ulde-debug-overlay__message">{{ d.message }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+}

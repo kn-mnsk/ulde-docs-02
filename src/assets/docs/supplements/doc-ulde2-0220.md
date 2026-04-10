@@ -1,3 +1,14 @@
+## Implement content-engine.ts
+
+Here’s a clean, ULDE‑aligned content-engine.ts that:
+
+- Wraps the plugin registry
+- Runs the content + metadata pipelines
+- Gives you a single place to evolve content behavior later
+
+Stays framework‑agnostic (no Angular imports)
+
+```
 // src/app/ulde/core/content-engine/content-engine.ts
 
 import {
@@ -5,8 +16,6 @@ import {
   UldeDocNode,
   UldeContentResult,
 } from '../runtime/ulde.types';
-
-import { findDocPathById } from '../../utils/docs/docs-lookup';
 
 export interface UldeContentSource {
   id: string;
@@ -24,31 +33,7 @@ export interface UldeContentSource {
  *  - run the metadata + content pipelines
  */
 export class ContentEngine {
-  constructor(private readonly registry: UldePluginRegistry) { }
-
-
-  /**
-   * Load a markdow file
-   */
-  async loadDocById(docId: string): Promise<{ text: string, path: string }> {
-    const filePath = findDocPathById(docId);
-
-    if (!filePath) {
-      throw new Error(`Doc not found for id: ${docId}`);
-    }
-
-    const res = await fetch(filePath);
-    if (!res.ok) {
-      throw new Error(`Failed to load: ${filePath}`);
-    }
-    // let text!: string;
-    // res.text().then(v => text = v)
-    const text = await res.text();
-
-    return { text: text, path: filePath };
-  }
-
-
+  constructor(private readonly registry: UldePluginRegistry) {}
 
   /**
    * Convert a generic content source into a UldeDocNode.
@@ -93,3 +78,5 @@ export class ContentEngine {
     return this.renderDoc(doc);
   }
 }
+
+```

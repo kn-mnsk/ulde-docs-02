@@ -1,3 +1,14 @@
+## 1. Wire ContentEngine into UldeService
+
+Your current UldeService calls the registry directly.
+Now we introduce the ContentEngine so the service becomes:
+
+- the Angular integration layer
+- the orchestrator for content loading + plugin pipelines
+- the single entry point for &lt;ulde-viewer>
+
+__Updated src/app/ulde/angular/ulde.service.ts__
+```ts
 // src/app/ulde/angular/ulde.service.ts
 
 import { Injectable, inject, Injector } from '@angular/core';
@@ -15,17 +26,10 @@ import { ContentEngine } from '../core/content-engine/content-engine';
 // Built‑in plugins
 import { HeadingAnchorsPlugin } from '../plugin-system/plugins/heading-anchors/heading-anchors.plugin';
 import { MarkdownPlugin } from '../plugin-system/plugins/markdown/markdown.plugin';
-import { KaTeXPlugin } from '../plugin-system/plugins/katex/katex.plugin';
-import { MermaidPlugin } from '../plugin-system/plugins/mermaid/mermaid.plugin';
-import { UldeDomHostService } from './ulde-dom-host.service';
-
-import { findDocPathById } from '../utils/docs/docs-lookup';
-
 
 @Injectable({ providedIn: 'root' })
 export class UldeService {
   private readonly injector = inject(Injector);
-  private readonly domHost = inject(UldeDomHostService);
 
   private readonly registry: UldePluginRegistry;
   private readonly contentEngine: ContentEngine;
@@ -52,9 +56,6 @@ export class UldeService {
   private async registerBuiltInPlugins() {
     await this.registerPlugin(MarkdownPlugin);
     await this.registerPlugin(HeadingAnchorsPlugin);
-    await this.registerPlugin(KaTeXPlugin);
-    // DOM plugins must be registered in the DOM host:
-    this.domHost.registerDomPlugin(MermaidPlugin);
   }
 
   async registerPlugin(plugin: UldePlugin) {
@@ -64,11 +65,6 @@ export class UldeService {
   listPlugins() {
     return this.registry.listPlugins();
   }
-
-  async loadDocById(docId: string): Promise<{text: string, path: string}>  {
-    return this.contentEngine.loadDocById(docId);
-  }
-
 
   // ---------------------------------------------
   // Rendering API (used by <ulde-viewer>)
@@ -97,3 +93,13 @@ export class UldeService {
     return this.registry;
   }
 }
+
+```
+This is now a clean, layered architecture:
+
+- Angular → UldeService
+- UldeService → ContentEngine
+- ContentEngine → plugin registry
+- plugin registry → plugin pipeline
+
+Exactly what ULDE v2 should be.

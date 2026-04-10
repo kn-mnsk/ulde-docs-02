@@ -1,5 +1,3 @@
-// src/app/ulde/angular/ulde-viewer/ulde-viewer.ts
-
 import {
   Component,
   Input,
@@ -11,24 +9,25 @@ import {
   ElementRef,
   AfterViewInit,
   OnDestroy,
+  Injector,
+  input,
 } from '@angular/core';
 
 import { UldeService } from '../ulde.service';
 import { UldeDomHostService } from '../ulde-dom-host.service';
-import { UldeDocNode, UldeContentResult } from '../../core/runtime/ulde.types';
+import { UldeContentResult } from '../../core/runtime/ulde.types';
 import { UldeDebugOverlay } from '../ulde-debug-overlay/ulde-debug-overlay';
 
 @Component({
-  selector: 'app-ulde-viewer',
-  imports:[UldeDebugOverlay],
+  selector: 'ulde-viewer',
   standalone: true,
+  imports: [UldeDebugOverlay],
   templateUrl: './ulde-viewer.html',
   styleUrls: ['./ulde-viewer.scss'],
 })
-export class UldeViewer
-  implements OnChanges, AfterViewInit, OnDestroy
-{
-  @Input() path!: string;
+export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
+  docId = input<string>();
+  // @Input() path!: string;
 
   @ViewChild('contentRoot', { static: false })
   contentRoot?: ElementRef<HTMLElement>;
@@ -36,20 +35,23 @@ export class UldeViewer
   private readonly ulde = inject(UldeService);
   private readonly domHost = inject(UldeDomHostService);
 
+  // ✔ The correct injector for DOM host
+  private readonly injector = inject(Injector);
+
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly rendered = signal<UldeContentResult | null>(null);
 
-  private viewInitialized = false;
+  private viewReady = false;
 
   async ngOnChanges(changes: SimpleChanges) {
-    if (changes['path'] && this.path) {
-      await this.loadAndRender(this.path);
+    if (changes['docId'] && this.docId()) {
+      await this.loadAndRender(this.docId());
     }
   }
 
   ngAfterViewInit() {
-    this.viewInitialized = true;
+    this.viewReady = true;
     this.attachDomHostIfReady();
   }
 
@@ -57,23 +59,42 @@ export class UldeViewer
     this.domHost.detach();
   }
 
-  private async loadAndRender(path: string) {
+  private attachDomHostIfReady() {
+    if (!this.contentRoot?.nativeElement) return;
+
+    // ✔ Correct: pass the component's injector
+    this.domHost.attach(this.contentRoot.nativeElement, this.injector);
+  }
+
+  private async loadAndRender(docId: string | undefined) {
+
+    if (!docId) return;
+
+    // private async loadAndRender(path: string) {
     this.loading.set(true);
     this.error.set(null);
 
     try {
-      const raw = await this.fetchDoc(path);
+      const { text, path } = await this.ulde.loadDocById(docId);
+
+      // const raw = await this.fetchDoc(path);
 
       const result = await this.ulde.renderFromSource({
-        id: path,
-        path,
+        id: docId,
+        path: path,
         format: 'markdown',
-        rawContent: raw,
+        rawContent: text,
       });
+      // const result = await this.ulde.renderFromSource({
+      //   id: path,
+      //   path,
+      //   format: 'markdown',
+      //   rawContent: raw,
+      // });
 
       this.rendered.set(result);
 
-      if (this.viewInitialized) {
+      if (this.viewReady) {
         this.attachDomHostIfReady();
         this.domHost.update();
       }
@@ -93,10 +114,5 @@ export class UldeViewer
     }
 
     return res.text();
-  }
-
-  private attachDomHostIfReady() {
-    if (!this.contentRoot?.nativeElement) return;
-    this.domHost.attach(this.contentRoot.nativeElement, inject(ElementRef).injector as any);
   }
 }

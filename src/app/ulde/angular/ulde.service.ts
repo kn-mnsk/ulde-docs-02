@@ -15,6 +15,7 @@ import { ContentEngine } from '../core/content-engine/content-engine';
 // Built‑in plugins
 import { HeadingAnchorsPlugin } from '../plugin-system/plugins/heading-anchors/heading-anchors.plugin';
 import { MarkdownPlugin } from '../plugin-system/plugins/markdown/markdown.plugin';
+import { ResolveLinksPlugin } from '../plugin-system/plugins/resolve-links/resolve-links.plugin';
 import { KaTeXPlugin } from '../plugin-system/plugins/katex/katex.plugin';
 import { MermaidPlugin } from '../plugin-system/plugins/mermaid/mermaid.plugin';
 import { UldeDomHostService } from './ulde-dom-host.service';
@@ -51,6 +52,7 @@ export class UldeService {
 
   private async registerBuiltInPlugins() {
     await this.registerPlugin(MarkdownPlugin);
+    await this.registerPlugin(ResolveLinksPlugin);
     await this.registerPlugin(HeadingAnchorsPlugin);
     await this.registerPlugin(KaTeXPlugin);
     // DOM plugins must be registered in the DOM host:

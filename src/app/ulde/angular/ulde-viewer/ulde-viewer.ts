@@ -11,6 +11,8 @@ import {
   OnDestroy,
   Injector,
   input,
+  output,
+  computed,
 } from '@angular/core';
 
 import { UldeService } from '../ulde.service';
@@ -19,15 +21,16 @@ import { UldeContentResult } from '../../core/runtime/ulde.types';
 import { UldeDebugOverlay } from '../ulde-debug-overlay/ulde-debug-overlay';
 
 @Component({
-  selector: 'ulde-viewer',
+  selector: 'app-ulde-viewer',
   standalone: true,
   imports: [UldeDebugOverlay],
   templateUrl: './ulde-viewer.html',
   styleUrls: ['./ulde-viewer.scss'],
 })
 export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
-  docId = input<string>();
+  docId = input<string>('');
   // @Input() path!: string;
+  contentRendered = output<HTMLElement>();
 
   @ViewChild('contentRoot', { static: false })
   contentRoot?: ElementRef<HTMLElement>;
@@ -42,17 +45,26 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
   readonly error = signal<string | null>(null);
   readonly rendered = signal<UldeContentResult | null>(null);
 
+  // $isRendered = computed<boolean>(() => {
+  //   return (this.rendered()) ? true : false;
+  // });
+  $isRendered = output<boolean>();
+
   private viewReady = false;
 
   async ngOnChanges(changes: SimpleChanges) {
     if (changes['docId'] && this.docId()) {
       await this.loadAndRender(this.docId());
+      this.$isRendered.emit((this.rendered()) ? true : false)
     }
   }
 
   ngAfterViewInit() {
     this.viewReady = true;
     this.attachDomHostIfReady();
+    // if (!this.docId()) {
+    //   this.loadAndRender('initialdoc'); // for initial loading
+    // }
   }
 
   ngOnDestroy() {
@@ -77,6 +89,7 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
     try {
       const { text, path } = await this.ulde.loadDocById(docId);
 
+      // console.log(`[UldeViewer][${this.docId()}] \npath=${path} \ntext=${text}`);
       // const raw = await this.fetchDoc(path);
 
       const result = await this.ulde.renderFromSource({
@@ -93,6 +106,9 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
       // });
 
       this.rendered.set(result);
+      const html = document.createElement('html');
+      html.innerHTML = result.content;
+      this.contentRendered.emit(html);
 
       if (this.viewReady) {
         this.attachDomHostIfReady();

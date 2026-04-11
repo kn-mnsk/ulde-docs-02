@@ -13,6 +13,7 @@ Angular README
 
 > [Angular Lifecycle - relation to Browser frame lifecyle](#docId:doc-angular-0100 "docID: doc-angular-0100")
 
+
 Application(Documentation System) README
 ------------------
 

@@ -64,7 +64,7 @@ export const DocsList: DocMeta[] = [
     "id": "initialdoc",
     "title": "Index",
     "filetype": "md",
-    "path": "assets/docs/INDEX.md",
+    "path": "assets/docs/index.md",
   },
   {
     "id": "angular-readme",
@@ -88,7 +88,7 @@ export const DocsList: DocMeta[] = [
     "id": "index",
     "title": "Index",
     "filetype": "md",
-    "path": "assets/docs/INDEX.md",
+    "path": "assets/docs/index.md",
   },
   // APPREADEME suppliments
   {

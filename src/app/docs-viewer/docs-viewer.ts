@@ -3,10 +3,15 @@ import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { UldeViewer } from '../ulde/angular/ulde-viewer/ulde-viewer';
 import { navigate } from '../global.utils/global.utils';
+import { MatIconModule } from '@angular/material/icon';
+import { take, firstValueFrom } from 'rxjs';
+import { readSessionState, writeSessionState } from './session-state.manage';
+
+import mermaid from 'mermaid';
 
 @Component({
   selector: 'app-docs-viewer',
-  imports: [UldeViewer],
+  imports: [UldeViewer, MatIconModule],
   templateUrl: './docs-viewer.html',
   styleUrl: './docs-viewer.scss',
 })
@@ -23,6 +28,9 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   // protected $docId = signal<string | null>(null);
   private $reload = signal(0);
 
+  /** Debug mode for scroll restoration */
+  debugScroll = false;
+  // debugScroll = true;
   $activeDocId = computed<{ docId: string, reloadCounter: number }>(() => ({
     docId: this.$docId() ?? this.$inputDocId(),
     reloadCounter: this.$reload()
@@ -57,62 +65,33 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  onContentRenderedOld(root: HTMLElement) {
-    console.log(`Log: ${this.$title} root Html`, root);
-    this.wireInternalLinksOld(root);
-  }
-
   onContentRendered(isRendered: boolean) {
-    console.log(`Log: ${this.$title} root Html`, isRendered);
-    this.wireInternalLinks();
-  }
+    console.log(`Log: ${this.$title()} onContentRendered() root Html isRendred=`, isRendered);
+    if (!isRendered) return;
 
-  private wireInternalLinksOld(root: HTMLElement) {
-    const links = root.querySelectorAll<HTMLAnchorElement>('a[href]');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // const root = this.docsViewer.nativeElement;
+        const root = document.getElementById('docsViewer');
 
-    links.forEach(link => {
-      const href = link.getAttribute('href');
-      if (!href || !href.startsWith('#')) return;
+        mermaid.initialize({ startOnLoad: false });
+        mermaid.run({ querySelector: '.language-mermaid' });
 
-      link.addEventListener('click', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const target = href.slice(1); // remove leading '#'
-
-        // Pattern: docId or docId#inlineId
-        const [docId, inlineId] = target.split('#');
-
-        // 1. Navigate to new doc
-        if (docId && docId !== this.$docId()) {
-          this.$docId.set(docId);
-          this.$reload.update(n => n + 1);; // optional depending on your model
+        if (!root) {
+          console.warn(`Warn: ${this.$title()} wireInternalLinks() \nroot=`, root);
           return;
         }
 
-        // 2. Inline navigation within same doc
-        if (inlineId) {
-          const el = root.querySelector<HTMLElement>(`#${inlineId}`);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-            // highlight
-            el.classList.add('inline-highlight');
-            setTimeout(() => el.classList.remove('inline-highlight'), 1200);
-
-            // make editable if needed
-            if (!el.hasAttribute('contenteditable')) {
-              el.setAttribute('contenteditable', 'true');
-            }
-          }
-        }
+        this.wireInternalLinks(root);
       });
-    });
+    })
   }
 
+  private wireInternalLinks(root: HTMLElement) {
 
-  private wireInternalLinks() {
-    const root = this.docsViewer.nativeElement;
+    console.log(`Log: ${this.$title()} wireInternalLinks() \nroot=`, root);
+
     const links = root.querySelectorAll<HTMLAnchorElement>('a[href]');
 
     this.clickHandler = (e: Event) => this.onClick(e, root);
@@ -176,4 +155,103 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
     }
 
   }
+
+
+  protected toggleTheme(event: Event): void {
+    event.preventDefault();
+    // console.log(`Log ${this.title()} toogleTheme event`, event);
+    this.$isDarkMode.set(!this.$isDarkMode());
+
+    const newTheme = this.$isDarkMode() ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme); // Save preference
+
+    // force effect to reload markdown, in order to enable thema chage
+    this.$reload.update(n => n + 1);
+  }
+
+  protected backToIndex(event?: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+    // this.scrollService.setPosition('initialdoc', 0, 0);
+    this.$docId.set('initialdoc');
+    // force effect to reload markdown in case the activeDocId is the same as previously
+    this.$reload.update(n => n + 1);
+
+  }
+
+  protected backToPrevious(event?: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+    // this.scrollService.setPosition('initialdoc', 0, 0);
+    const prevDocId = readSessionState(this.$isBrowser()).prevDocId;
+    if (!prevDocId) return;
+
+    this.$docId.set(prevDocId);
+    // force effect to reload markdown in case the activeDocId is the same as previously
+    this.$reload.update(n => n + 1);
+  }
+
+
+  /* ---------------------------------------------------------
+     Debug Tools
+  --------------------------------------------------------- */
+
+  private timeline = new Map<string, number>();
+
+  private mark(label: string) {
+    this.timeline.set(label, performance.now());
+  }
+
+  private exportTimeline(): Record<string, number> {
+    const base = [...this.timeline.values()][0] ?? 0;
+    const out: Record<string, number> = {};
+    for (const [k, v] of this.timeline.entries()) {
+      out[k] = Math.round(v - base);
+    }
+    return out;
+  }
+
+  private showScrollDebugOverlay(info: {
+    restored: number;
+    max: number;
+    percent: number;
+  }) {
+    if (!this.debugScroll) return;
+
+    const timeline = this.exportTimeline();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'dv-scroll-debug-overlay';
+
+    overlay.innerHTML = `
+    <div class="dv-title">Scroll Restoration Debug</div>
+    <div>Restored: <strong>${info.restored}px</strong></div>
+    <div>Max: <strong>${info.max}px</strong></div>
+    <div>Percent: <strong>${info.percent.toFixed(1)}%</strong></div>
+
+    <div class="dv-subtitle">Timeline (ms)</div>
+    ${Object.entries(timeline)
+        .map(([k, v]) => `<div>${k}: ${v}</div>`)
+        .join('')}
+  `;
+
+    document.body.appendChild(overlay);
+
+    requestAnimationFrame(() => {
+      overlay.classList.add('visible');
+    });
+
+    setTimeout(() => {
+      overlay.classList.remove('visible');
+      setTimeout(() => overlay.remove(), 300);
+    }, 10000);
+  }
+
+
+
+
+
 }

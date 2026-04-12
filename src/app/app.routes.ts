@@ -8,7 +8,7 @@ export const routes: Routes = [
 {
     path: 'home',
     // title: docsTitleResolver,
-    title: 'home',
+    title: 'home-UldeDocsV2',
     loadComponent:  () => import('./docs-viewer/docs-viewer').then(m => m.DocsViewer)
   },
   {

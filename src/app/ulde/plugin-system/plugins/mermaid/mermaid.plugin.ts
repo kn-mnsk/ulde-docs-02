@@ -18,11 +18,16 @@ export const MermaidPlugin: UldeDomPlugin = {
   async onDomInit(ctx: UldeDomPluginContext) {
     mermaid.initialize({ startOnLoad: false });
 
-    const blocks = ctx.rootElement.querySelectorAll(
-      'pre code.language-mermaid'
-    );
+    console.log(`Log: [mermaid.plugin] onDomInit \nctx.rootElement=`, ctx.rootElement);
 
-    blocks.forEach((codeEl, index) => {
+    // const blocks = ctx.rootElement.getElementsByClassName('language-mermaid pre');
+    const blocks = document.querySelectorAll('code.language-mermaid');
+    // const blocks = ctx.rootElement.querySelectorAll('code.language-mermaid');
+
+    console.log(`Log: [mermaid.plugin] onDomInit \nblocks=`, blocks);
+
+    blocks?.forEach((codeEl, index) => {
+
       const parent = codeEl.parentElement!;
       const graph = codeEl.textContent ?? '';
 
@@ -34,6 +39,9 @@ export const MermaidPlugin: UldeDomPlugin = {
       container.textContent = graph;
 
       parent.replaceWith(container);
+
+      console.log(`Log: [mermaid.plugin] onDomInit \ncontainer=`, container);
+
 
       mermaid.run({ nodes: [container] });
     });

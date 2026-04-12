@@ -69,7 +69,12 @@ export class UldeDomHostService {
   }
 
   private async runHook(hook: 'onDomInit' | 'onDomUpdate' | 'onDomDestroy') {
+
+    console.log(`Log: UldeDomHostService runHook \nhook= `, hook, this.rootElement);
+
     if (!this.rootElement) return;
+
+    console.log(`Log: UldeDomHostService runHook \nhook= `, hook);
 
     for (const plugin of this.plugins) {
       const fn = plugin[hook];

@@ -60,6 +60,50 @@ export interface DocMeta {
 }
 
 export const DocsList: DocMeta[] = [
+// test docs - begin
+  {
+    "id": "test.initialdoc",
+    "title": "Index",
+    "filetype": "md",
+    "path": "assets/docs/test/test.index.md",
+  },
+  {
+    "id": "test.index",
+    "title": "Index",
+    "filetype": "md",
+    "path": "assets/docs/test/test.index.md",
+  },
+  {
+    "id": "test.angular-readme",
+    "title": "Angular README",
+    "filetype": "md",
+    "path": "assets/docs/test/test.ANGULARREADME.md",
+  },
+  {
+    "id": "test.doc-angular-0100",
+    "title": "Angular Lifecycle",
+    "filetype": "md",
+    "path": "assets/docs/test/test.doc-angular-0100.md",
+  },
+  {
+    "id": "test.application-readme",
+    "title": "Application README",
+    "filetype": "md",
+    "path": "assets/docs/test/test.APPREADME.md",
+  },
+  {
+    "id": "test.doc-app-0200",
+    "title": "Application Lifecycle Integration",
+    "filetype": "md",
+    "path": "assets/docs/test/test.doc-app-0200.md",
+  },
+  {
+    "id": "test.katex",
+    "title": "Katex Test",
+    "filetype": "md",
+    "path": "assets/docs/test/test.katex.md",
+  },
+// test docs - end
   {
     "id": "initialdoc",
     "title": "Index",

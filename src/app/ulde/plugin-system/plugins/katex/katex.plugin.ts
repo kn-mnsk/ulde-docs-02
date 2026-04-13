@@ -58,6 +58,9 @@ export const KaTeXPlugin: UldePlugin = {
     });
 
     return {
+      id: doc.id,
+      path: doc.path,
+      title: doc.title,
       content: html,
       format: 'html',
       metadata: doc.metadata,

@@ -43,12 +43,25 @@ export interface UldeDocNode {
   metadata: Record<string, unknown>;
 }
 
+export interface UldeContentSource {
+  id: string;
+  path: string; // e.g. "/getting-started"
+  title?: string;
+  format: UldeDocNode['format'];
+  rawContent: string;
+  metadata?: Record<string, unknown>;
+}
+
 export interface UldeContentResult {
+  id?: string;
+  path?: string;
+  title?: string;
   content: string;          // transformed content (usually HTML)
   format: UldeDocNode['format'] | 'html';
   metadata: Record<string, unknown>;
   diagnostics: UldeDiagnostic[];
 }
+
 
 // ---------------------------------------------
 // Logging

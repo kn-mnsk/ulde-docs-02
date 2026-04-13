@@ -107,6 +107,9 @@ class DefaultUldePipeline implements UldePipeline {
   ) { }
 
   async runContent(doc: UldeDocNode): Promise<UldeContentResult> {
+    let currentId: string | undefined = doc.id;
+    let currentPath: string | undefined = doc.path;
+    let currentTitle: string |undefined = doc.title;
     let currentContent: string = doc.rawContent;
     let currentFormat: UldeDocNode['format'] | 'html' = doc.format;
     let currentMetadata: Record<string, unknown> = { ...doc.metadata };
@@ -144,6 +147,9 @@ class DefaultUldePipeline implements UldePipeline {
     }
 
     return {
+      id: currentId,
+      path: currentPath,
+      title: currentTitle,
       content: currentContent,
       format: currentFormat,
       metadata: currentMetadata,

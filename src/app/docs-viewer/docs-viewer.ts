@@ -24,7 +24,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   protected $isDarkMode = signal<boolean>(true);
 
   protected $inputDocId = input.required<string>(); // from DocsViewerDirective
-  protected $docId = signal<string>('index');
+  protected $docId = signal<string>('test.initialdoc');
   // protected $docId = signal<string | null>(null);
   private $reload = signal(0);
 
@@ -175,7 +175,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
       event.preventDefault();
     }
     // this.scrollService.setPosition('initialdoc', 0, 0);
-    this.$docId.set('initialdoc');
+    this.$docId.set('test.initialdoc');
     // force effect to reload markdown in case the activeDocId is the same as previously
     this.$reload.update(n => n + 1);
 

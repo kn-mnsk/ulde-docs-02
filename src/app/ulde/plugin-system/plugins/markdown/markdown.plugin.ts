@@ -73,6 +73,9 @@ export const MarkdownPlugin: UldePlugin = {
       const html = md.render(doc.rawContent);
 
       return {
+        id: doc.id,
+        path: doc.path,
+        title: doc.title,
         content: html,
         format: 'html',
         metadata: doc.metadata,
@@ -82,6 +85,9 @@ export const MarkdownPlugin: UldePlugin = {
       ctx.logger.error('Markdown transform failed', e);
 
       return {
+        id: doc.id,
+        path: doc.path,
+        title: doc.title,
         content: doc.rawContent,
         format: doc.format,
         metadata: doc.metadata,

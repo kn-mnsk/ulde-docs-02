@@ -5,6 +5,6 @@ export function findDocPathById(id: string): string | null {
   return entry ? entry.path : null;
 }
 
-export function findDocMeta(id: string): DocMeta | null {
+export function findDocMetaById(id: string): DocMeta | null {
   return DocsList.find(d => d.id === id) ?? null;
 }

@@ -119,28 +119,14 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
     this.error.set(null);
 
     try {
-      const { text, path } = await this.ulde.loadDocById(docId);
+      const source = await this.ulde.loadDocMetaById(docId);
 
-      // console.log(`[UldeViewer][${this.docId()}] \npath=${path} \ntext=${text}`);
-      // const raw = await this.fetchDoc(path);
-
-      const result = await this.ulde.renderFromSource({
-        id: docId,
-        path: path,
-        format: 'markdown',
-        rawContent: text,
-      });
-      // const result = await this.ulde.renderFromSource({
-      //   id: path,
-      //   path,
-      //   format: 'markdown',
-      //   rawContent: raw,
-      // });
-
+      const result = await this.ulde.renderFromSource(source);
       this.rendered.set(result);
+
       const html = document.createElement('html');
       html.innerHTML = result.content;
-      this.contentRendered.emit(html);
+      this.contentRendered.emit(html); // output to <app-docs-viewer/>
 
       if (this.viewReady) {
         this.attachDomHostIfReady();

@@ -74,7 +74,12 @@ export const HeadingAnchorsPlugin: UldePlugin = {
         }
       );
 
+      console.log(`Log: HeadingAnchorsPlugin \ncontentWithAnchors=\n`, contentWithAnchors);
+
       return {
+        id: doc.id,
+        path: doc.path,
+        title: doc.title,
         content: contentWithAnchors,
         format: 'html',
         metadata: doc.metadata,
@@ -84,6 +89,9 @@ export const HeadingAnchorsPlugin: UldePlugin = {
       ctx.logger.error('HeadingAnchors transform failed', e);
 
       return {
+        id: doc.id,
+        path: doc.path,
+        title: doc.title,
         content: doc.rawContent,
         format: doc.format,
         metadata: doc.metadata,

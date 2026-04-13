@@ -4,18 +4,10 @@ import {
   UldePluginRegistry,
   UldeDocNode,
   UldeContentResult,
+  UldeContentSource,
 } from '../runtime/ulde.types';
 
-import { findDocPathById } from '../../utils/docs/docs-lookup';
-
-export interface UldeContentSource {
-  id: string;
-  path: string; // e.g. "/getting-started"
-  title?: string;
-  format: UldeDocNode['format'];
-  rawContent: string;
-  metadata?: Record<string, unknown>;
-}
+import { findDocPathById, findDocMetaById } from '../../utils/docs/docs-lookup';
 
 /**
  * ContentEngine is a thin orchestrator over the ULDE plugin registry.
@@ -48,6 +40,30 @@ export class ContentEngine {
     return { text: text, path: filePath };
   }
 
+  async loadDocMetaById(docId: string): Promise<UldeContentSource> {
+    const meta = findDocMetaById(docId);
+
+    if (!meta) {
+      throw new Error(`Doc not found for id: ${docId}`);
+    }
+
+    const res = await fetch(meta.path);
+    if (!res.ok) {
+      throw new Error(`Failed to load: ${meta.path}`);
+    }
+    // let text!: string;
+    // res.text().then(v => text = v)
+    const text = await res.text();
+    const source: UldeContentSource = {
+      id: docId,
+      path: meta.path,
+      title: meta.title,
+      format: 'markdown',
+      rawContent: text
+    };
+
+    return source;
+  }
 
 
   /**

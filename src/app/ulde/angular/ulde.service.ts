@@ -7,6 +7,7 @@ import {
   UldePluginRegistry,
   UldePlugin,
   UldeDocNode,
+  UldeContentSource,
   UldeContentResult,
 } from '../core/runtime/ulde.types';
 
@@ -52,8 +53,9 @@ export class UldeService {
 
   private async registerBuiltInPlugins() {
     await this.registerPlugin(MarkdownPlugin);
-    await this.registerPlugin(ResolveLinksPlugin);
     await this.registerPlugin(HeadingAnchorsPlugin);
+    await this.registerPlugin(ResolveLinksPlugin);
+    // await this.registerPlugin(HeadingAnchorsPlugin);// original poition
     await this.registerPlugin(KaTeXPlugin);
     // DOM plugins must be registered in the DOM host:
     this.domHost.registerDomPlugin(MermaidPlugin);
@@ -71,6 +73,9 @@ export class UldeService {
     return this.contentEngine.loadDocById(docId);
   }
 
+  async loadDocMetaById(docId: string): Promise<UldeContentSource>  {
+    return this.contentEngine.loadDocMetaById(docId);
+  }
 
   // ---------------------------------------------
   // Rendering API (used by <ulde-viewer>)
@@ -80,7 +85,7 @@ export class UldeService {
     return this.contentEngine.renderDoc(doc);
   }
 
-  async renderFromSource(source: {
+  async renderFromSourceOld(source: {
     id: string;
     path: string;
     title?: string;
@@ -88,6 +93,11 @@ export class UldeService {
     rawContent: string;
     metadata?: Record<string, unknown>;
   }): Promise<UldeContentResult> {
+    return this.contentEngine.renderFromSource(source);
+  }
+
+
+  async renderFromSource(source: UldeContentSource): Promise<UldeContentResult> {
     return this.contentEngine.renderFromSource(source);
   }
 

@@ -1,6 +1,7 @@
 import {
   Component, OnChanges, SimpleChanges, signal, inject, ViewChild, ElementRef, AfterViewInit, OnDestroy, Injector, input, output, PLATFORM_ID, Inject,
 } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { isPlatformBrowser } from '@angular/common';
 import { UldeService } from '../ulde.service';
@@ -25,6 +26,8 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
   // @Input() path!: string;
   contentRendered = output<HTMLElement>();
 
+  private sanitizer = inject(DomSanitizer);
+  sanitizedContent!: SafeHtml;
 
   @ViewChild('contentRoot', { static: false })
   contentRoot?: ElementRef<HTMLElement>;
@@ -66,10 +69,14 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
       // const rendered = (this.rendered()) ? true : false;
 
       if (this.rendered()) {
-
+        const content = this.rendered()?.content;
+        if (!content) return;
+        this.sanitizedContent = this.sanitizer.bypassSecurityTrustHtml(content);
         // const root = document.getElementById('contentRoot');
         const root = this.contentRoot?.nativeElement;
-        console.log(`Log: UldeViewer ngOnChages \nroot= `, root);
+        if (!root) return;
+
+        // console.log(`Log: UldeViewer ngOnChages \nroot= `, root);
         // console.log(`Log: UldeViewer ngOnChanges rendered= `, true, this.rendered()?.content);
         this.viewReady = true;
         this.attachDomHostIfReady();
@@ -93,6 +100,7 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
     console.log(`Log: UldeViewer attachDomHostIfReady() \nroot= `, root);
 
     if (!root) return;
+
 
     // ✔ Correct: pass the component's injector
     this.domHost.attach(root, this.injector);

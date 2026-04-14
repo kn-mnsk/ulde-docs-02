@@ -74,7 +74,7 @@ export const HeadingAnchorsPlugin: UldePlugin = {
         }
       );
 
-      console.log(`Log: HeadingAnchorsPlugin \ncontentWithAnchors=\n`, contentWithAnchors);
+      // console.log(`Log: HeadingAnchorsPlugin \ncontentWithAnchors=\n`, contentWithAnchors);
 
       return {
         id: doc.id,

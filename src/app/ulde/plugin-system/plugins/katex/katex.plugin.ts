@@ -6,8 +6,8 @@ import {
 } from '../../../core/runtime/ulde.types';
 
 import katex from 'katex';
+import renderMathInElement from "katex/contrib/auto-render";
 // import 'katex/dist/katex.min.css';
-
 export const KaTeXPlugin: UldePlugin = {
   meta: {
     id: 'ulde.katex',
@@ -35,33 +35,53 @@ export const KaTeXPlugin: UldePlugin = {
       };
     }
 
-    let html = doc.rawContent;
+    let html: string = doc.rawContent;
 
-    // Block math: $$ ... $$
-    html = html.replace(/\$\$([^$]+)\$\$/g, (_m, expr) => {
-      try {
-        return katex.renderToString(expr, { displayMode: true });
-      } catch (e) {
-        ctx.logger.error('KaTeX block render failed', e);
-        return _m;
-      }
+    const container = document.createElement('div');
+    container.innerHTML = html;
+    renderMathInElement(container, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\begin{equation}", right: "\\end{equation}", display: true },
+        { left: "\\begin{align}", right: "\\end{align}", display: true },
+        { left: "\\begin{alignat}", right: "\\end{alignat}", display: true },
+        { left: "\\begin{gather}", right: "\\end{gather}", display: true },
+        { left: "\\begin{CD}", right: "\\end{CD}", display: true },
+        { left: "\\[", right: "\\]", display: true }
+      ],
+      errorCallback: (err) => {
+        console.error('Error Katex.plugin renderMathInElement', JSON.stringify(`${err}`));
+      },
+      throwOnError: true,
+      errorColor: "#ff0000",
+      output: "htmlAndMathml",
+      minRuleThickness: 0.05,
+      strict: true,
+
     });
 
-    // Inline math: $ ... $
-    html = html.replace(/\$([^$]+)\$/g, (_m, expr) => {
-      try {
-        return katex.renderToString(expr, { displayMode: false });
-      } catch (e) {
-        ctx.logger.error('KaTeX inline render failed', e);
-        return _m;
+    html = container.outerHTML;
+
+    // console.log(`Log: katex.plugin.ts transmerfomative: container`, container, `\n html=`, html);
+
+    // Regex: strip surrounding <div>content</div>
+    const htmlWithoutDiv = html.replace(
+      /<div>([^<]+)<\/div>/g,
+      (_match, text) => {
+        return text;
       }
-    });
+    );
+
+    // console.log(`Log: katex.plugin.ts transmerfomative: \n final html=`, htmlWithoutDiv);
+
 
     return {
       id: doc.id,
       path: doc.path,
       title: doc.title,
-      content: html,
+      content: htmlWithoutDiv,
       format: 'html',
       metadata: doc.metadata,
       diagnostics: [],

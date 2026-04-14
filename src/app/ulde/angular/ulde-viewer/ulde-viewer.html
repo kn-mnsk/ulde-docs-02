@@ -3,29 +3,29 @@
 <div class="ulde-viewer" #uldeViewer>
 
   @if (loading()) {
-    <div class="ulde-viewer__loading">
-      Loading…
-    </div>
+  <div class="ulde-viewer__loading">
+    Loading…
+  </div>
   } @else {
 
-    @if (error()) {
-      <div class="ulde-viewer__error">
-        {{ error() }}
-      </div>
-    } @else {
+  @if (error()) {
+  <div class="ulde-viewer__error">
+    {{ error() }}
+  </div>
+  } @else {
 
-      @if (rendered()) {
-        <p>content rendered</p>
-        <div id="contentRoot"
+  @if (rendered()) {
+  <p>content rendered</p>
+  <!-- <div id="contentRoot"
           #contentRoot
           class="ulde-viewer__content"
           [innerHTML]="rendered()?.content"
-        ></div>
+        ></div> -->
+  <div id="contentRoot" #contentRoot class="ulde-viewer__content" [innerHTML]="sanitizedContent"></div>
+  <app-ulde-debug-overlay />
+  }
 
-        <app-ulde-debug-overlay />
-      }
-
-    }
+  }
 
   }
 

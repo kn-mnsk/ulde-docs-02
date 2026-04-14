@@ -19,7 +19,7 @@ body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", system-uri, sans-serif;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   // overflow: hidden; // ensure only the markdownViewer scrolls
   transition: background-color 0.7s ease-in-out, color 0.7s ease-in-out;
 }
@@ -228,11 +228,16 @@ body[data-theme="light"] {
   margin: 0.5em 0;
 }
 
+.katex {
+  font-size: 1.1em;
+}
+
+
 /* ---------------------------------------------------------
    Marked
 --------------------------------------------------------- */
 
-.doc-body table {
+.docsViewer table {
   border-collapse: collapse;
   width: fit-content; //100%;
   margin-top: 1rem;
@@ -242,12 +247,13 @@ body[data-theme="light"] {
   border-radius: 3em;
 }
 
-.doc-body table th {
+.docsViewer table th {
   // background-color: rgb(206, 14, 78);
   background-color: var(--table-header-bg);
 }
-.doc-body table th,
-.doc-body table td {
+
+.docsViewer table th,
+.docsViewer table td {
   // border: 1rem solid var(--table-border);
   // border: 1px solid var(--table-border);
   border: 2px solid #1bee22;
@@ -256,20 +262,20 @@ body[data-theme="light"] {
 }
 
 
-.doc-body table tr:nth-child(even) {
+.docsViewer table tr:nth-child(even) {
   // background-color: yellow;
   // background-color: #05252e;
   border-bottom: solid 1px rgb(227, 219, 219);
 }
 
-.doc-body table tr:nth-child(odd) {
+.docsViewer table tr:nth-child(odd) {
   // background-color: green;
   // background-color: #ce164a;
   border-bottom: solid 1px rgb(227, 219, 219);
 }
 
 
-.markdownViewer .md-table-container {
+.docsViewer .md-table-container {
   position: relative;
   display: flex;
   // left: 5em;
@@ -277,7 +283,7 @@ body[data-theme="light"] {
   justify-content: center;
 }
 
-.markdownViewer .md-table {
+.docsViewer .md-table {
   border-collapse: collapse;
   width: fit-content; //100%;
   margin-top: 1rem;
@@ -287,44 +293,44 @@ body[data-theme="light"] {
   border-radius: 3em;
 }
 
-.markdownViewer .md-table th {
+.docsViewer .md-table th {
   // background-color: rgb(206, 14, 78);
   background-color: var(--table-header-bg);
 }
 
-.markdownViewer .md-table th,
-.markdownViewer .md-table td {
+.docsViewer .md-table th,
+.docsViewer .md-table td {
   border: 1px solid var(--table-border);
   // border: 1px solid #1bee22;
   padding: 0.5rem;
   vertical-align: top;
 }
 
-.markdownViewer .md-table td {
+.docsViewer .md-table td {
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-.markdownViewer .md-table tr:nth-child(even) {
+.docsViewer .md-table tr:nth-child(even) {
   background-color: var(--table-bg-even);
   // background-color: #05252e;
   border-bottom: solid 1px rgb(227, 219, 219);
 }
 
-.markdownViewer .md-table tr:nth-child(odd) {
+.docsViewer .md-table tr:nth-child(odd) {
   background-color: var(--table-bg-odd);
   // background-color: #ce164a;
   border-bottom: solid 1px rgb(227, 219, 219);
 }
 
 // temporary class: scroll by onClick function
-.markdownViewer .highlight {
+.docsViewer .highlight {
   background-color: rgb(219, 219, 22);
   transition: background-color 0.7s ease-in-out, color 0.7s ease-in-out;
   // transition: background-color 1.5s ease;
 }
 
 
-.markdownViewer .folder-container {
+.docsViewer .folder-container {
   position: relative;
   display: flex;
   // left: 5em;
@@ -334,27 +340,27 @@ body[data-theme="light"] {
 }
 
 
-.markdownViewer .align-center25 {
+.docsViewer .align-center25 {
   position: relative;
   left: 25%;
 }
 
-.markdownViewer .align-center15 {
+.docsViewer .align-center15 {
   position: relative;
   left: 15%;
 }
 
-.markdownViewer .align-center10 {
+.docsViewer .align-center10 {
   position: relative;
   left: 10%;
 }
 
-.markdownViewer .align-center7 {
+.docsViewer .align-center7 {
   position: relative;
   left: 7%;
 }
 
-// .markdownViewer.hidden-during-render {
+// .docsViewer.hidden-during-render {
 //   visibility: hidden;
 //   // background-color: white;
 //   opacity: 0;
@@ -365,8 +371,9 @@ body[data-theme="light"] {
    Mermaid
 --------------------------------------------------------- */
 
-.markdownViewer .mermaid-container {
+.docsViewer .language-mermaid {
   position: relative;
+  width: 80vw;
   padding: 1em; // test
   // background-color: rgb(227, 229, 233); // for debug use
   display: flex;
@@ -375,15 +382,8 @@ body[data-theme="light"] {
 
 }
 
-.markdownViewer .mermaid-container,
-.mermaid {
-  width: 80vw // min-height: 70vh;
-    // min-width: 70vw;
-
-}
-
-.markdownViewer g text {
-  // .markdownViewer g .label-container {
+.docsViewer .langauge-mermaid g text {
+  // .docsViewer g .label-container {
   // word-wrap: normal;
   word-wrap: break-word;
   // font-size: 10px;

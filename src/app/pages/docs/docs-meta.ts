@@ -62,7 +62,7 @@ export interface DocMeta {
 export const DocsList: DocMeta[] = [
 // test docs - begin
   {
-    "id": "test.initialdoc",
+    "id": "test.initialdocX",
     "title": "Index",
     "filetype": "md",
     "path": "assets/docs/test/test.index.md",
@@ -98,7 +98,7 @@ export const DocsList: DocMeta[] = [
     "path": "assets/docs/test/test.doc-app-0200.md",
   },
   {
-    "id": "test.katex",
+    "id": "test.initialdoc",
     "title": "Katex Test",
     "filetype": "md",
     "path": "assets/docs/test/test.katex.md",

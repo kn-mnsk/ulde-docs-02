@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, signal, input, computed, Inject, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, signal, input, computed, Inject, inject, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { UldeViewer } from '../ulde/angular/ulde-viewer/ulde-viewer';
@@ -24,7 +25,8 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   protected $isDarkMode = signal<boolean>(true);
 
   protected $inputDocId = input.required<string>(); // from DocsViewerDirective
-  protected $docId = signal<string>('test.initialdoc');
+  protected $docId = signal<string>('initialdoc');
+  // protected $docId = signal<string>('test.initialdoc');
   // protected $docId = signal<string | null>(null);
   private $reload = signal(0);
 
@@ -43,6 +45,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   // private clickHandler = this.onClick.bind(this);
   // private scrollHandler = this.onScroll.bind(this);
 
+  private sanitizer = inject(DomSanitizer);
 
   @ViewChild('docsViewer', { static: true }) docsViewer!: ElementRef<HTMLElement>;
 
@@ -52,6 +55,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   ) {
     const isBrowser = isPlatformBrowser(this.platformId);
     this.$isBrowser.set(isBrowser);
+
   }
 
   ngOnInit(): void {
@@ -74,13 +78,14 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
         // const root = this.docsViewer.nativeElement;
         const root = document.getElementById('docsViewer');
 
-        mermaid.initialize({ startOnLoad: false });
-        mermaid.run({ querySelector: '.language-mermaid' });
-
         if (!root) {
           console.warn(`Warn: ${this.$title()} wireInternalLinks() \nroot=`, root);
           return;
         }
+
+        mermaid.initialize({ startOnLoad: false });
+        mermaid.run({ querySelector: '.language-mermaid' });
+
 
 
         this.wireInternalLinks(root);

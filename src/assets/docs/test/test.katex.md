@@ -13,34 +13,26 @@
 [View Gaussian Curvature](#canvas:GaussianCurvature)  
 [View Möbius Strip](#canvas:Mobius)
 
-A sphere of radius a can be represented by the vector form: $\mathbf{r(\theta, \phi)} = a\space\sin(\theta)\cos(\phi)\mathbf{l_{1}} + a\space\cos(\theta)\mathbf{l_{2}} + a\space\sin(\theta) \sin(\phi)\mathbf{l_{3}},$ where a is the radius of the sphere and $\mathbf{l_{1}, l_{2}, l_{3}}$ is a triad of orthogonal unit n-tuples.  
-Then,  
-$\mathbf{t} = \frac{\mathrm{d}\mathbf{r}}{\mathrm{d}s}
-=\frac{\delta \mathbf{r}}{\delta  \theta}\frac{\mathrm{d}\theta}{\mathrm{d}s} + \frac{\delta \mathbf{r}}{\delta  \phi}\frac{\mathrm{d}\phi}{\mathrm{d}s}
-\space = a\left(\cos(\theta)cos(\phi)\frac{\mathrm{d}\theta}{\mathrm{d}s} - \sin(\theta)sin(\phi)\frac{\mathrm{d}\phi}{\mathrm{d}s}\right)\mathbf{l_{1}} -$
-$ a\space\sin(\theta)\frac{\mathrm{d}\theta}{\mathrm{d}s}\mathbf{l_{2}} + a\left(\cos(\theta)sin(\phi)\frac{\mathrm{d}\theta}{\mathrm{d}s} + \sin(\theta)cos(\phi)\frac{\mathrm{d}\phi}{\mathrm{d}s}\right)\mathbf{l_{3}}
-$  
 
-$
-\frac{\mathrm{d}\mathbf{t}}{\mathrm{d}s} = \frac{\mathrm{d^2}\mathbf{r}}{\mathrm{d}s^2}
-= \frac{\delta^{2}\mathbf{r}}{\delta\theta^{2}}\(\frac{\mathrm{d}\theta}{\mathrm{d}s}\)^2 + \frac{\delta \mathbf{r}}{\delta\theta}\frac{\mathrm{d^2}\theta}{\mathrm{d}s^2} + \frac{\delta^{2}\mathbf{r}}{\delta\phi^{2}}\(\frac{\mathrm{d}\phi}{\mathrm{d}s}\)^2 + \frac{\delta \mathbf{r}}{\delta\phi}\frac{\mathrm{d^2}\phi}{\mathrm{d}s^2} =
-$  
-$
-\space a\left[\cos(\theta)\cos(\phi)\frac{\mathrm{d^2}\theta}{\mathrm{d}s^2} - \sin(\theta)\cos(\phi)\left(\left(\frac{\mathrm{d}\theta}{\mathrm{d}s}\right)^2 + \left(\frac{\mathrm{d}\phi}{\mathrm{d}s}\right)^2\right) - \sin(\theta)\sin(\phi)\frac{\mathrm{d^2}\phi}{\mathrm{d}s^2}\right]\mathbf{l_1}+
-$  
-$
-\space a\left[-\sin(\theta)\frac{\mathrm{d^2}\theta}{\mathrm{d}s^2} - \cos(\theta)\left(\left(\frac{\mathrm{d}\theta}{\mathrm{d}s}\right)^2 + \left(\frac{\mathrm{d}\phi}{\mathrm{d}s}\right)^2\right) + \cos(\phi)\frac{\mathrm{d^2}\phi}{\mathrm{d}s^2}\right]\mathbf{l_2} +
-$  
-$
-\space a\left[\cos(\theta)\sin(\phi)\frac{\mathrm{d^2}\theta}{\mathrm{d}s^2} - \sin(\theta)\sin(\phi)\left(\left(\frac{\mathrm{d}\theta}{\mathrm{d}s}\right)^2 + \left(\frac{\mathrm{d}\phi}{\mathrm{d}s}\right)^2\right) + \sin(\theta)\cos(\phi)\frac{\mathrm{d^2}\phi}{\mathrm{d}s^2}\right]\mathbf{l_3}
-$  
-$
-\lbrace
-\space \frac{\mathrm{d^2}\theta}{\mathrm{d}s^2} = \frac{\mathrm{d^2}\phi}{\mathrm{d}s^2} = 0, \space and \space \left(\left(\frac{\mathrm{d}\theta}{\mathrm{d}s}\right)^2 + \left(\frac{\mathrm{d}\phi}{\mathrm{d}s}\right)^2\right) = \frac{1}{a^2}\rbrace
-$  
-$
-=-a\left(\sin(\theta)\cos(\phi)\mathbf{l_{1}} + \cos(\theta)\mathbf{l_{2}} + \sin(\theta)\sin(\phi)\mathbf{l_{3}}\right)
-$  
+A sphere of radius a can be represented by the vector form: $\mathbf{r(\theta, \phi)} = a\space\sin(\theta)\cos(\phi)\mathbf{l_{1}} + a\space\cos(\theta)\mathbf{l_{2}} + a\space\sin(\theta) \sin(\phi)\mathbf{l_{3}},\$ where a is the radius of the sphere and $\mathbf{l_{1}, l_{2}, l_{3}}$ is a triad of orthogonal unit n-tuples.  
+Then,  
+
+$\mathbf{t} = \frac{\mathrm{d}\mathbf{r}}{\mathrm{d}s} = \frac{\delta \mathbf{r}}{\delta  \theta}\frac{\mathrm{d}\theta}{\mathrm{d}s} + \frac{\delta \mathbf{r}}{\delta  \phi}\frac{\mathrm{d}\phi}{\mathrm{d}s} \space = a\left(\cos(\theta)cos(\phi)\frac{\mathrm{d}\theta}{\mathrm{d}s} - \sin(\theta)sin(\phi)\frac{\mathrm{d}\phi}{\mathrm{d}s}\right)\mathbf{l_{1}} -$
+
+$a\space\sin(\theta)\frac{\mathrm{d}\theta}{\mathrm{d}s}\mathbf{l_{2}} + a\left(\cos(\theta)sin(\phi)\frac{\mathrm{d}\theta}{\mathrm{d}s} + \sin(\theta)cos(\phi)\frac{\mathrm{d}\phi}{\mathrm{d}s}\right)\mathbf{l_{3}}$
+
+$\frac{\mathrm{d}\mathbf{t}}{\mathrm{d}s} = \frac{\mathrm{d^2}\mathbf{r}}{\mathrm{d}s^2} = \frac{\delta^{2}\mathbf{r}}{\delta\theta^{2}}\(\frac{\mathrm{d}\theta}{\mathrm{d}s}\)^2 + \frac{\delta \mathbf{r}}{\delta\theta}\frac{\mathrm{d^2}\theta}{\mathrm{d}s^2} + \frac{\delta^{2}\mathbf{r}}{\delta\phi^{2}}\(\frac{\mathrm{d}\phi}{\mathrm{d}s}\)^2 + \frac{\delta \mathbf{r}}{\delta\phi}\frac{\mathrm{d^2}\phi}{\mathrm{d}s^2}$
+
+
+$\space a\left[\cos(\theta)\cos(\phi)\frac{\mathrm{d^2}\theta}{\mathrm{d}s^2} - \sin(\theta)\cos(\phi)\left(\left(\frac{\mathrm{d}\theta}{\mathrm{d}s}\right)^2 + \left(\frac{\mathrm{d}\phi}{\mathrm{d}s}\right)^2\right) - \sin(\theta)\sin(\phi)\frac{\mathrm{d^2}\phi}{\mathrm{d}s^2}\right]\mathbf{l_1}+$  
+
+$\space a\left[-\sin(\theta)\frac{\mathrm{d^2}\theta}{\mathrm{d}s^2} - \cos(\theta)\left(\left(\frac{\mathrm{d}\theta}{\mathrm{d}s}\right)^2 + \left(\frac{\mathrm{d}\phi}{\mathrm{d}s}\right)^2\right) + \cos(\phi)\frac{\mathrm{d^2}\phi}{\mathrm{d}s^2}\right]\mathbf{l_2} +$  
+
+$\space a\left[\cos(\theta)\sin(\phi)\frac{\mathrm{d^2}\theta}{\mathrm{d}s^2} - \sin(\theta)\sin(\phi)\left(\left(\frac{\mathrm{d}\theta}{\mathrm{d}s}\right)^2 + \left(\frac{\mathrm{d}\phi}{\mathrm{d}s}\right)^2\right) + \sin(\theta)\cos(\phi)\frac{\mathrm{d^2}\phi}{\mathrm{d}s^2}\right]\mathbf{l_3}$  
+
+$\lbrace\space \frac{\mathrm{d^2}\theta}{\mathrm{d}s^2} = \frac{\mathrm{d^2}\phi}{\mathrm{d}s^2} = 0, \space and \space \left(\left(\frac{\mathrm{d}\theta}{\mathrm{d}s}\right)^2 + \left(\frac{\mathrm{d}\phi}{\mathrm{d}s}\right)^2\right) = \frac{1}{a^2}\rbrace$
+
+$=-a\left(\sin(\theta)\cos(\phi)\mathbf{l_{1}} + \cos(\theta)\mathbf{l_{2}} + \sin(\theta)\sin(\phi)\mathbf{l_{3}}\right)$  
 
 |First Header | Second Header|
 |-------------|--------------|
@@ -55,7 +47,7 @@ The core idea behind it
 
 Gauss’s Law states:
 
-$ \Phi_E = \oint \vec{E} \cdot d\vec{A} = \frac{q_{\text{inside}}}{\varepsilon_0} $
+$\Phi_E = \oint \vec{E} \cdot d\vec{A} = \frac{q_{\text{inside}}}{\varepsilon_0}$
 
 Where:
 
@@ -111,7 +103,7 @@ Would you like a quick demo of how curvature behaves on different surfaces? Or m
 
 Imagine walking on a surface and measuring how much it curves. The Gaussian curvature at a point is the product of the maximum and minimum curvatures you can measure through that point on different directions (formally called the principal curvatures $k_1$ and $k_2$):
 
-$ K = k_1 \cdot k_2 $
+$K = k_1 \cdot k_2$
 
 Here’s how this plays out:
 
@@ -136,11 +128,11 @@ Second Fundamental Form II: Encodes how the surface bends in space.
 
 From these, we compute:
 
-$ K = \frac{\det(\text{Second Fundamental Form})}{\det(\text{First Fundamental Form})} $
+$K = \frac{\det(\text{Second Fundamental Form})}{\det(\text{First Fundamental Form})}$
 
 Or symbolically:
 
-$ K = \frac{LN - M^2}{EG - F^2} $
+$K = \frac{LN - M^2}{EG - F^2}$
 
 Where:
 
@@ -156,18 +148,18 @@ If you'd like, I can walk through a full example—say, computing the curvature 
 
 Let’s take a sphere of radius $ r $. A standard parametrization using spherical coordinates is:
 
-$ \vec{X}(\theta, \phi) = \begin{bmatrix} r \sin(\phi) \cos(\theta) \ r \sin(\phi) \sin(\theta) \ r \cos(\phi) \end{bmatrix} $
+$\vec{X}(\theta, \phi) = \begin{bmatrix} r \sin(\phi) \cos(\theta) \ r \sin(\phi) \sin(\theta) \ r \cos(\phi) \end{bmatrix}$
 
 where:
 
-$ \theta \in [0, 2\pi]$ (azimuthal angle)
+$\theta \in [0, 2\pi]$ (azimuthal angle)
 
-$ \phi \in [0, \pi] $ (polar angle)
+$\phi \in [0, \pi]$ (polar angle)
 
 📐 Step 2: Compute the First Fundamental Form
 
 Take partial derivatives of $ \vec{X} $:</br>
-$ \vec{X_{\theta}} = \begin{bmatrix} -r \sin(\phi) \sin(\theta) \cr r \sin(\phi) \cos(\theta) \cr 0 \end{bmatrix}, &nbsp; \vec{X_{\phi}} = \begin{bmatrix} r \cos(\phi) \cos(\theta) \cr r \cos(\phi) \sin(\theta) \cr -r \sin(\phi) \end{bmatrix} $
+$\vec{X_{\theta}} = \begin{bmatrix} -r \sin(\phi) \sin(\theta) \cr r \sin(\phi) \cos(\theta) \cr 0 \end{bmatrix}, \space \vec{X_{\phi}} = \begin{bmatrix} r \cos(\phi) \cos(\theta) \cr r \cos(\phi) \sin(\theta) \cr -r \sin(\phi) \end{bmatrix}$
 
 Now calculate:  
 $ E = \vec{X_{\theta}} \cdot \vec{X_{\theta}} = r^2 \sin^2(\phi) $</br>
@@ -177,17 +169,21 @@ $ G = \vec{X}\phi \cdot \vec{X}\phi = r^2 $
 🧮 Step 3: Compute the Second Fundamental Form
 
 First, compute the unit normal:</br>
-$ \vec{N} = \frac{\vec{X}\theta \times \vec{X}\phi}{|\vec{X}\theta \times \vec{X}\phi|} = \frac{1}{r} \vec{X}(\theta, \phi) $
+$\vec{N} = \frac{\vec{X}\theta \times \vec{X}\phi}{|\vec{X}\theta \times \vec{X}\phi|} = \frac{1}{r} \vec{X}(\theta, \phi)$
 
-Then take second partials:</br>
-$ \vec{X_{\theta\theta}} = -r \sin(\phi) \cos(\theta)\hat{i} - r \sin(\phi) \sin(\theta) \hat{j} $</br>
-$ \vec{X_{\phi\phi}} = -r \sin(\phi) \cos(\theta) \hat{i} - r \sin(\phi) \sin(\theta)\hat{j} - r \cos(\phi)\hat{k} $</br>
-$ \vec{X_{\theta\phi}} = \text{(not needed since ( F = 0 ))} $
+Then take second partials:
+$\vec{X_{\theta\theta}} = -r \sin(\phi) \cos(\theta)\hat{i} - r \sin(\phi) \sin(\theta) \hat{j}$
+
+$\vec{X_{\phi\phi}} = -r \sin(\phi) \cos(\theta) \hat{i} - r \sin(\phi) \sin(\theta)\hat{j} - r \cos(\phi)\hat{k} $
+
+$\vec{X_{\theta\phi}} = \text{(not needed since ( F = 0 ))} $
 
 Now calculate:</br>
-$ L = \vec{X_{\theta\theta}} \cdot \vec{N} = -r \sin^2(\phi) $</br>
-$ N = \vec{X_{\phi\phi}} \cdot \vec{N} = -r $</br>
-$ M = 0 $
+$L = \vec{X_{\theta\theta}} \cdot \vec{N} = -r \sin^2(\phi)$
+
+$N = \vec{X_{\phi\phi}} \cdot \vec{N} = -r$
+
+$M = 0$
 
 🌀 Step 4: Gaussian Curvature
 

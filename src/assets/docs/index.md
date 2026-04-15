@@ -3,6 +3,12 @@ Index (ID: index)
 
 ---
 
+KATEX TEST
+---
+> [Katex test file](#docId:test.katex)
+
+---
+
 Angular README
 --------------
 

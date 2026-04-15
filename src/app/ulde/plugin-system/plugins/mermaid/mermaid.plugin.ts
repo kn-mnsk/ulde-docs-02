@@ -15,40 +15,25 @@ export const MermaidPlugin: UldeDomPlugin = {
     tags: ['mermaid', 'diagrams'],
   },
 
+  onDomRegister(ctx: UldeDomPluginContext) {
+    ctx.logger.info(`onDomRegister, `);
+  },
+
   async onDomInit(ctx: UldeDomPluginContext) {
-    mermaid.initialize({ startOnLoad: false });
+    ctx.logger.info(`onDomInit ${this.meta.description} `);
 
-    console.log(`Log: [mermaid.plugin] onDomInit \nctx.rootElement=`, ctx.rootElement);
+    mermaid.initialize({ startOnLoad: true });
 
-    // const blocks = ctx.rootElement.getElementsByClassName('language-mermaid pre');
-    const blocks = document.querySelectorAll('code.language-mermaid');
-    // const blocks = ctx.rootElement.querySelectorAll('code.language-mermaid');
-
-    console.log(`Log: [mermaid.plugin] onDomInit \nblocks=`, blocks);
-
-    blocks?.forEach((codeEl, index) => {
-
-      const parent = codeEl.parentElement!;
-      const graph = codeEl.textContent ?? '';
-
-      const id = `mermaid-${ctx.pluginId}-${index}`;
-
-      const container = document.createElement('div');
-      container.classList.add('mermaid');
-      container.id = id;
-      container.textContent = graph;
-
-      parent.replaceWith(container);
-
-      console.log(`Log: [mermaid.plugin] onDomInit \ncontainer=`, container);
-
-
-      mermaid.run({ nodes: [container] });
-    });
+    mermaid.run({ querySelector: '.language-mermaid' });
   },
 
   async onDomUpdate(ctx: UldeDomPluginContext) {
     // Optional: re-render on updates
+
+    // ctx.logger.info(`onDomUpdate ${this.meta.description}`);
+    // // mermaid.initialize({ startOnLoad: false });
+
+    // mermaid.run({ querySelector: '.language-mermaid' });
   },
 
   async onDomDestroy(ctx: UldeDomPluginContext) {

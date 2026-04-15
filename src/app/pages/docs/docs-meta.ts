@@ -98,7 +98,7 @@ export const DocsList: DocMeta[] = [
     "path": "assets/docs/test/test.doc-app-0200.md",
   },
   {
-    "id": "test.initialdoc",
+    "id": "test.katex",
     "title": "Katex Test",
     "filetype": "md",
     "path": "assets/docs/test/test.katex.md",

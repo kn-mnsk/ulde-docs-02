@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, signal, input, computed, Inject, inject, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, signal, input, computed, Inject, inject, PLATFORM_ID, ViewChild, ElementRef, Injector } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { navigate } from '../global.utils/global.utils';
 import { MatIconModule } from '@angular/material/icon';
 import { take, firstValueFrom } from 'rxjs';
 import { readSessionState, writeSessionState } from './session-state.manage';
+import { UldeDomHostService } from '../ulde/angular/ulde-dom-host.service';
 
 import mermaid from 'mermaid';
 
@@ -47,6 +48,10 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
   private sanitizer = inject(DomSanitizer);
 
+  // ✔ The correct injector for DOM host
+  private readonly injector = inject(Injector);
+  private readonly domHost = inject(UldeDomHostService);
+
   @ViewChild('docsViewer', { static: true }) docsViewer!: ElementRef<HTMLElement>;
 
   constructor(
@@ -66,31 +71,37 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (!this.$isBrowser()) return;
 
+    this.domHost.attach(this.docsViewer.nativeElement, inject(Injector))
+
+    // this.wireInternalLinks(this.docsViewer.nativeElement);
   }
 
   onContentRendered(isRendered: boolean) {
-    console.log(`Log: ${this.$title()} onContentRendered() root Html isRendred=`, isRendered);
+    // console.log(`Log: ${this.$title()} onContentRendered() root Html isRendred=`, isRendered);
     if (!isRendered) return;
-
+    // if (!this.$isBrowser()) return;
+    // if (!this.docsViewer.nativeElement) return;
+    // this.wireInternalLinks(this.docsViewer.nativeElement);
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        // const root = this.docsViewer.nativeElement;
+        // const rootViewChild = this.docsViewer.nativeElement;
         const root = document.getElementById('docsViewer');
-
+        //     // console.log(`Log: ${this.$title()} onContentRendered() \nrootViewChild=`, rootViewChild, `\nroot=`, root);
         if (!root) {
           console.warn(`Warn: ${this.$title()} wireInternalLinks() \nroot=`, root);
           return;
         }
 
-        mermaid.initialize({ startOnLoad: false });
-        mermaid.run({ querySelector: '.language-mermaid' });
+        //     // mermaid.initialize({ startOnLoad: false });
+        //     // mermaid.run({ querySelector: '.language-mermaid' });
 
-
-
+        //     this.domHost.update();
+        this.domHost.attach(root, this.injector);
         this.wireInternalLinks(root);
       });
-    })
+    });
   }
 
   private wireInternalLinks(root: HTMLElement) {
@@ -180,7 +191,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
       event.preventDefault();
     }
     // this.scrollService.setPosition('initialdoc', 0, 0);
-    this.$docId.set('test.initialdoc');
+    this.$docId.set('initialdoc');
     // force effect to reload markdown in case the activeDocId is the same as previously
     this.$reload.update(n => n + 1);
 

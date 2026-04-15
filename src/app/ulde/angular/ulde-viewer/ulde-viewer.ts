@@ -22,7 +22,7 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
 
   private $isBrowser = signal<boolean>(false);
 
-  docId = input<string>('');
+  $docId = input<string>('');
   // @Input() path!: string;
   contentRendered = output<HTMLElement>();
 
@@ -36,7 +36,7 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
   uldeViewer?: ElementRef<HTMLElement>;
 
   private readonly ulde = inject(UldeService);
-  private readonly domHost = inject(UldeDomHostService);
+  // private readonly domHost = inject(UldeDomHostService);
 
   // ✔ The correct injector for DOM host
   private readonly injector = inject(Injector);
@@ -63,8 +63,8 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
   async ngOnChanges(changes: SimpleChanges) {
     // if (!this.$isBrowser()) return;
 
-    if (changes['docId'] && this.docId()) {
-      await this.loadAndRender(this.docId());
+    if (changes['$docId'] && this.$docId()) {
+      await this.loadAndRender(this.$docId());
 
       // const rendered = (this.rendered()) ? true : false;
 
@@ -73,13 +73,13 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
         if (!content) return;
         this.sanitizedContent = this.sanitizer.bypassSecurityTrustHtml(content);
         // const root = document.getElementById('contentRoot');
-        const root = this.contentRoot?.nativeElement;
-        if (!root) return;
+        // const root = this.contentRoot?.nativeElement;
+        // if (!root) return;
 
         // console.log(`Log: UldeViewer ngOnChages \nroot= `, root);
         // console.log(`Log: UldeViewer ngOnChanges rendered= `, true, this.rendered()?.content);
         this.viewReady = true;
-        this.attachDomHostIfReady();
+        // this.attachDomHostIfReady();
         this.$isRendered.emit(true);
       }
     }
@@ -90,35 +90,24 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.domHost.detach();
+    // this.domHost.detach();
   }
 
-  private attachDomHostIfReadyOld() {
-
-
-    const root = this.contentRoot?.nativeElement;
-    console.log(`Log: UldeViewer attachDomHostIfReady() \nroot= `, root);
-
-    if (!root) return;
-
-
-    // ✔ Correct: pass the component's injector
-    this.domHost.attach(root, this.injector);
-  }
   private attachDomHostIfReady() {
 
     const uldeViewer = this.uldeViewer?.nativeElement;
 
-    const blocks = uldeViewer?.getElementsByClassName('ulde-viewer_content');
-
-    console.log(`Log: UldeViewer attachDomHostIfReady() \nuldeViewer= `, uldeViewer, blocks);
+    console.log(`Log: UldeViewer attachDomHostIfReady() \nuldeViewer= `, uldeViewer);
 
     if (!uldeViewer) return;
-    this.domHost.attach(uldeViewer, this.injector);
+
+    // this.domHost.attach(uldeViewer, this.injector);
 
   }
 
   private async loadAndRender(docId: string | undefined) {
+
+    // console.log(`loadAndReady In`, this.viewReady);
 
     if (!docId) return;
 
@@ -132,14 +121,16 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
       const result = await this.ulde.renderFromSource(source);
       this.rendered.set(result);
 
-      const html = document.createElement('html');
-      html.innerHTML = result.content;
-      this.contentRendered.emit(html); // output to <app-docs-viewer/>
+      // const html = document.createElement('html');
+      // html.innerHTML = result.content;
+      // this.contentRendered.emit(html); // output to <app-docs-viewer/>
 
-      if (this.viewReady) {
-        this.attachDomHostIfReady();
-        this.domHost.update();
-      }
+      // if (this.viewReady) {
+      //   // console.log(`this.viewReady=`, this.viewReady);
+      //   this.attachDomHostIfReady();
+      //   this.domHost.update();
+      // }
+
     } catch (e: any) {
       this.error.set(e?.message ?? 'Failed to load document');
     } finally {

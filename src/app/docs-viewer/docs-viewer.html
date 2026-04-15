@@ -20,6 +20,5 @@
 
 </div>
 
-<app-ulde-viewer id="docsViewer" class="docsViewer" #docsViewer [docId]="$docId()"
-  ($isRendered)="onContentRendered($event)"
+<app-ulde-viewer id="docsViewer" class="docsViewer" #docsViewer [$docId]="$docId()" ($isRendered)="onContentRendered($event)"
 ></app-ulde-viewer>

@@ -1,7 +1,7 @@
 // src/app/ulde/angular/ulde.service.ts
 
 import { Injectable, inject, Injector } from '@angular/core';
-import { createUldePluginRegistry } from '../plugin-system/registry/plugin-registry';
+import { createUldePluginRegistry, } from '../plugin-system/registry/plugin-registry';
 
 import {
   UldePluginRegistry,

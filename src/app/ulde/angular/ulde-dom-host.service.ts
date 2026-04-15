@@ -6,7 +6,10 @@ import {
   UldeDomPluginContext,
   UldeDomBudget,
   UldeDiagnostic,
+  UldeLogger,
 } from '../core/runtime/ulde.types';
+
+import { ConsoleLogger } from '../plugin-system/registry/plugin-registry';
 
 @Injectable({ providedIn: 'root' })
 export class UldeDomHostService {
@@ -22,15 +25,24 @@ export class UldeDomHostService {
   private readonly overlays = new Map<string, HTMLElement>();
   private readonly plugins: UldeDomPlugin[] = [];
 
+  private readonly logger!: UldeLogger;
+
   readonly diagnostics = signal<UldeDiagnostic[]>([]);
 
   registerDomPlugin(plugin: UldeDomPlugin) {
     this.plugins.push(plugin);
+
+    // // new revision
+    // if (plugin.onDomRegister) {
+    //   this.runHook('onDomRegister');
+    // }
+
   }
 
   attach(rootElement: HTMLElement, injector: Injector) {
     this.rootElement = rootElement;
     this.injector = injector;
+    this.runHook('onDomRegister');
     this.runHook('onDomInit');
   }
 
@@ -53,6 +65,7 @@ export class UldeDomHostService {
 
     return {
       pluginId,
+      logger: new ConsoleLogger(pluginId),
       rootElement: this.rootElement,
       injector: this.injector ?? undefined,
       budget: this.domBudget,
@@ -68,13 +81,13 @@ export class UldeDomHostService {
     };
   }
 
-  private async runHook(hook: 'onDomInit' | 'onDomUpdate' | 'onDomDestroy') {
+  private async runHook(hook: 'onDomRegister' | 'onDomInit' | 'onDomUpdate' | 'onDomDestroy') {
 
     console.log(`Log: UldeDomHostService runHook \nhook= `, hook, this.rootElement);
 
     if (!this.rootElement) return;
 
-    console.log(`Log: UldeDomHostService runHook \nhook= `, hook);
+    // console.log(`Log: UldeDomHostService runHook \nhook= `, hook);
 
     for (const plugin of this.plugins) {
       const fn = plugin[hook];

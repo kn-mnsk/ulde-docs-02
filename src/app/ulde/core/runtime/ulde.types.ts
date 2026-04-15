@@ -73,6 +73,11 @@ export interface UldeLogger {
   error(message: string, data?: unknown): void;
 }
 
+export interface UldeDomLogger {
+  info(message: string, data?: unknown): void;
+  warn(message: string, data?: unknown): void;
+  error(message: string, data?: unknown): void;
+}
 // ---------------------------------------------
 // Plugin Context + Capabilities
 // ---------------------------------------------
@@ -150,6 +155,7 @@ export interface UldeDomBudget {
 
 export interface UldeDomPluginContext {
   readonly pluginId: UldePluginId;
+  readonly logger: UldeLogger;
 
   // Root element for this doc view
   readonly rootElement: HTMLElement;
@@ -170,7 +176,7 @@ export interface UldeDomPluginContext {
 
 export interface UldeDomPlugin {
   readonly meta: UldePluginMeta;
-
+  onDomRegister?(ctx: UldeDomPluginContext): void | Promise<void>;
   onDomInit?(ctx: UldeDomPluginContext): void | Promise<void>;
   onDomUpdate?(ctx: UldeDomPluginContext): void | Promise<void>;
   onDomDestroy?(ctx: UldeDomPluginContext): void | Promise<void>;

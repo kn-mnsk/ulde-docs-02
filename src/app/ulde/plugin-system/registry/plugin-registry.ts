@@ -21,7 +21,7 @@ import {
  * Simple in-memory logger implementation.
  * You can later route this to your real logging utils.
  */
-class ConsoleLogger implements UldeLogger {
+export class ConsoleLogger implements UldeLogger {
 
   constructor(private readonly pluginId: UldePluginId) { }
 

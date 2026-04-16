@@ -239,3 +239,32 @@ export interface UldePluginRegistry {
 
   dispose(): Promise<void>;
 }
+
+/* ---------------------------------------------------------
+ * CONTENT PHASE PLUGIN
+ * Runs on raw HTML string before DOM creation.
+ * --------------------------------------------------------- */
+export interface UldeContentPlugin {
+  readonly id: UldePluginId;
+
+  // Transform raw HTML before DOM creation
+  transform?(html: string): string;
+
+  // Optional diagnostics
+  reportDiagnostic?(diag: UldeDiagnostic): void;
+}
+
+
+/* ---------------------------------------------------------
+ * PLUGIN BUNDLE
+ * Combines content-phase and DOM-phase plugins.
+ * --------------------------------------------------------- */
+export interface UldePluginBundle {
+  readonly id: UldePluginId;
+
+  // Optional content-phase plugin
+  readonly content?: UldeContentPlugin;
+
+  // Optional DOM-phase plugin
+  readonly dom?: UldeDomPlugin;
+}

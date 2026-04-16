@@ -1,65 +1,30 @@
+//
+
 import {
   UldeDomPlugin,
   UldeDomPluginContext,
 } from '../../../core/runtime/ulde.types';
 
-// import mermaid from 'mermaid';
+/**
+ * internallinks is a NodeList — not stable after DOM updates
+NodeList is live in some browsers and static in others.
+ULDE DOM updates may replace the entire subtree.
 
-function onClick(e: Event, root: HTMLElement): void {
+So:
 
-    e.preventDefault();
-    e.stopPropagation();
+You may remove listeners from elements that no longer exist
 
-    const anchor = e.currentTarget as HTMLAnchorElement;
-    const href = (anchor.getAttribute('href'))?.split(':').flat() ?? null;
+You may fail to remove listeners from replaced nodes
+ */
+// let internallinks: NodeListOf<HTMLAnchorElement> | null = null;
+// let clickHandler: (e: Event) => void;
 
-    if (!href) {
-      console.warn(`Warn ${this.$title()} : On Click  Failed  Reference Not Found`);
-      navigate(this.router, ['/fallback']);
-      return;
-    }
-    const target = href; // remove leading '#'
-    // const target = href.slice(1); // remove leading '#'
 
-    // Pattern: docId or docId#inlineId
-    const [linkId, destId] = target;
-    // const [docId, inlineId] = target.split('#');
+let handlers: Array<{ link: HTMLAnchorElement, handler: (e: Event) => void }> = [];
 
-    // 1. Navigate to new doc
-    if (linkId === "#docId") {
-      if (destId && destId !== this.$docId()) {
-        // if (docId && docId !== this.$docId()) {
-        this.$docId.set(destId);
-        // this.$docId.set(docId);
-        this.$reload.update(n => n + 1);; // optional depending on your model
-        return;
-      }
-    }
-
-    // 2. Inline navigation within same doc
-    if (linkId === "#inlineId") {
-      // if (inlineId) {
-      anchor.parentElement
-      const el = root.querySelector<HTMLElement>(`#${destId}`);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        // highlight
-        el.classList.add('inline-highlight');
-        setTimeout(() => el.classList.remove('inline-highlight'), 1200);
-
-        // make editable if needed
-        if (!el.hasAttribute('contenteditable')) {
-          el.setAttribute('contenteditable', 'true');
-        }
-      }
-    }
-
-// declare function clickHandler(): (e: Event) => void;// = {};
-
-export const  ResolveLinksPlugin: UldeDomPlugin = {
+export const ResolveLinksDomPlugin: UldeDomPlugin = {
   meta: {
-    id: 'ulde.resolve-links',
+    id: 'ulde.resolve-links-dom',
     kind: 'dom',
     displayName: 'Internal Link Resolver',
     description: 'Supports both legacy (#docId:, #inlineId:) and standard markdown links.',
@@ -68,36 +33,57 @@ export const  ResolveLinksPlugin: UldeDomPlugin = {
   },
 
   onDomRegister(ctx: UldeDomPluginContext) {
-    ctx.logger.info(`onDomRegister, `);
+    ctx.logger.info(`onDomRegister`);
+
   },
 
-  async onDomInit(ctx: UldeDomPluginContext) {
-    ctx.logger.info(`onDomInit ${this.meta.description} `);
+  onDomInit(ctx: UldeDomPluginContext) {
+    const root = ctx.rootElement;
+    ctx.logger.info(`onDomINit`);
 
-    const links = .querySelectorAll<HTMLAnchorElement>('a[href]');
+    const links = root.querySelectorAll<HTMLAnchorElement>('a[href]');
 
-    const clickHandler = (e: Event) => this.onClick(e, root);
     links.forEach(link => {
-      const href = link.getAttribute('href');
-      if (!href || !href.startsWith('#')) return;
+      const initialHref = link.getAttribute('href');
+      if (!initialHref || !initialHref.startsWith('#')) return;
 
-      // link.addEventListener('click', this.clickHandler.arguments(root));
-      link.addEventListener('click', clickHandler);
+      const handler = (event: Event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        // This is fine only if the link never changes.
+        // But ULDE DOM plugins may mutate attributes later.
+        // here get again to prevent mutation
+        const raw = link.getAttribute('href');
+        if (!raw) return;
+
+        const [linkId, destId] = raw.split(':');
+        // linkId = '#docId' or '#inlineId'
+        // destId = 'guide/setup' or '2-key-features'
+        ctx.logger.info(`onDomINit linkId=${linkId} destId=${destId}`);
+        root.dispatchEvent(new CustomEvent('ulde-link-click', {
+          bubbles: true,
+          detail: { linkId, destId }
+        }));
+      };
+
+      // link.addEventListener('ulde-link-click', clickHandler);
+      link.addEventListener('click', handler);
+      handlers.push({ link, handler });
+
     });
-  }
-
   },
 
-  async onDomUpdate(ctx: UldeDomPluginContext) {
+  onDomUpdate(ctx: UldeDomPluginContext) {
     // Optional: re-render on updates
-
-    // ctx.logger.info(`onDomUpdate ${this.meta.description}`);
-    // // mermaid.initialize({ startOnLoad: false });
-
-    // mermaid.run({ querySelector: '.language-mermaid' });
   },
 
-  async onDomDestroy(ctx: UldeDomPluginContext) {
+  onDomDestroy(ctx: UldeDomPluginContext) {
     // Optional: cleanup
+    handlers.forEach(({ link, handler }) => {
+      link.removeEventListener('click', handler);
+    });
+    handlers = [];
   },
-};
+
+}
+

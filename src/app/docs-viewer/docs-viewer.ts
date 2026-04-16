@@ -1,15 +1,10 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, signal, input, computed, Inject, inject, PLATFORM_ID, ViewChild, ElementRef, Injector } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { UldeViewer } from '../ulde/angular/ulde-viewer/ulde-viewer';
-import { navigate } from '../global.utils/global.utils';
 import { MatIconModule } from '@angular/material/icon';
-import { take, firstValueFrom } from 'rxjs';
 import { readSessionState, writeSessionState } from './session-state.manage';
 import { UldeDomHostService } from '../ulde/angular/ulde-dom-host.service';
-
-import mermaid from 'mermaid';
 
 @Component({
   selector: 'app-docs-viewer',
@@ -27,8 +22,6 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
   protected $inputDocId = input.required<string>(); // from DocsViewerDirective
   protected $docId = signal<string>('initialdoc');
-  // protected $docId = signal<string>('test.initialdoc');
-  // protected $docId = signal<string | null>(null);
   private $reload = signal(0);
 
   /** Debug mode for scroll restoration */
@@ -42,17 +35,14 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   protected docTitle!: string | undefined;
 
   // keep a reference to the handler
-  private clickHandler!: (e: Event) => void;
-  // private clickHandler = this.onClick.bind(this);
-  // private scrollHandler = this.onScroll.bind(this);
+  private uUldeLinkClickHandler = this.onUldeLinkClick.bind(this);
 
-  private sanitizer = inject(DomSanitizer);
-
-  // ✔ The correct injector for DOM host
   private readonly injector = inject(Injector);
   private readonly domHost = inject(UldeDomHostService);
 
-  @ViewChild('docsViewer', { static: true }) docsViewer!: ElementRef<HTMLElement>;
+  private root: HTMLElement | null = null;
+
+  // @ViewChild('docsViewer', { static: true }) docsViewer!: ElementRef<HTMLElement>;
 
   constructor(
     private router: Router,
@@ -67,111 +57,80 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
   }
   ngAfterViewInit(): void {
+    if (!this.$isBrowser()) return;
 
   }
 
   ngOnDestroy(): void {
-    if (!this.$isBrowser()) return;
-
-    this.domHost.attach(this.docsViewer.nativeElement, inject(Injector))
-
-    // this.wireInternalLinks(this.docsViewer.nativeElement);
+    if (this.root) {
+      this.root.removeEventListener('ulde-link-click', this.uUldeLinkClickHandler);
+      this.root = null;
+    }
   }
 
   onContentRendered(isRendered: boolean) {
     // console.log(`Log: ${this.$title()} onContentRendered() root Html isRendred=`, isRendered);
     if (!isRendered) return;
-    // if (!this.$isBrowser()) return;
-    // if (!this.docsViewer.nativeElement) return;
-    // this.wireInternalLinks(this.docsViewer.nativeElement);
+
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         // const rootViewChild = this.docsViewer.nativeElement;
-        const root = document.getElementById('docsViewer');
-        //     // console.log(`Log: ${this.$title()} onContentRendered() \nrootViewChild=`, rootViewChild, `\nroot=`, root);
-        if (!root) {
-          console.warn(`Warn: ${this.$title()} wireInternalLinks() \nroot=`, root);
+        this.root = document.getElementById('docsViewer');
+        // console.log(`Log: ${this.$title()} onContentRendered() \nrootViewChild=`, rootViewChild, `\nroot=`, root);
+        if (!this.root) {
+          console.warn(`Warn: ${this.$title()} wireInternalLinks() \nroot=`, this.root);
           return;
         }
 
-        //     // mermaid.initialize({ startOnLoad: false });
-        //     // mermaid.run({ querySelector: '.language-mermaid' });
+        this.domHost.attach(this.root, this.injector);
 
-        //     this.domHost.update();
-        this.domHost.attach(root, this.injector);
-        this.wireInternalLinks(root);
+        this.root.addEventListener('ulde-link-click', this.uUldeLinkClickHandler);
+
       });
     });
   }
 
-  private wireInternalLinks(root: HTMLElement) {
 
-    console.log(`Log: ${this.$title()} wireInternalLinks() \nroot=`, root);
-
-    const links = root.querySelectorAll<HTMLAnchorElement>('a[href]');
-
-    this.clickHandler = (e: Event) => this.onClick(e, root);
-    links.forEach(link => {
-      const href = link.getAttribute('href');
-      if (!href || !href.startsWith('#')) return;
-
-      // link.addEventListener('click', this.clickHandler.arguments(root));
-      link.addEventListener('click', this.clickHandler);
-    });
+  private onUldeLinkClick(e: any) {
+    console.log(`Log: Onclick`, e);
+    if (e.type === 'ulde-link-click') {
+      const { linkId, destId } = e.detail;
+      this.handleInternalNavigation(linkId, destId);
+    }
   }
 
-  private onClick(e: Event, root: HTMLElement): void {
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const anchor = e.currentTarget as HTMLAnchorElement;
-    const href = (anchor.getAttribute('href'))?.split(':').flat() ?? null;
-
-    if (!href) {
-      console.warn(`Warn ${this.$title()} : On Click  Failed  Reference Not Found`);
-      navigate(this.router, ['/fallback']);
+  private handleInternalNavigation(linkId: string, destId: string) {
+    if (linkId === '#docId') {
+      if (destId && destId !== this.$docId()) {
+        this.$docId.set(destId);
+        this.$reload.update(n => n + 1);;
+      }
       return;
     }
-    const target = href; // remove leading '#'
-    // const target = href.slice(1); // remove leading '#'
 
-    // Pattern: docId or docId#inlineId
-    const [linkId, destId] = target;
-    // const [docId, inlineId] = target.split('#');
-
-    // 1. Navigate to new doc
-    if (linkId === "#docId") {
-      if (destId && destId !== this.$docId()) {
-        // if (docId && docId !== this.$docId()) {
-        this.$docId.set(destId);
-        // this.$docId.set(docId);
-        this.$reload.update(n => n + 1);; // optional depending on your model
-        return;
-      }
+    if (linkId === '#inlineId') {
+      this.scrollToInline(destId);
+      return;
     }
-
-    // 2. Inline navigation within same doc
-    if (linkId === "#inlineId") {
-      // if (inlineId) {
-      anchor.parentElement
-      const el = root.querySelector<HTMLElement>(`#${destId}`);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        // highlight
-        el.classList.add('inline-highlight');
-        setTimeout(() => el.classList.remove('inline-highlight'), 1200);
-
-        // make editable if needed
-        if (!el.hasAttribute('contenteditable')) {
-          el.setAttribute('contenteditable', 'true');
-        }
-      }
-    }
-
   }
 
+  private scrollToInline(inlineId: string) {
+    // Wait for ULDE to finish rendering (contentRendered event)
+    requestAnimationFrame(() => {
+      const el = this.root?.querySelector(`#${inlineId}`);
+      if (!el) return;
+
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      el.classList.add('inline-highlight');
+      setTimeout(() => el.classList.remove('inline-highlight'), 1200);
+
+      // Optional: make editable
+      if (!el.hasAttribute('contenteditable')) {
+        el.setAttribute('contenteditable', 'true');
+      }
+    });
+  }
 
   protected toggleTheme(event: Event): void {
     event.preventDefault();
@@ -209,65 +168,6 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
     // force effect to reload markdown in case the activeDocId is the same as previously
     this.$reload.update(n => n + 1);
   }
-
-
-  /* ---------------------------------------------------------
-     Debug Tools
-  --------------------------------------------------------- */
-
-  private timeline = new Map<string, number>();
-
-  private mark(label: string) {
-    this.timeline.set(label, performance.now());
-  }
-
-  private exportTimeline(): Record<string, number> {
-    const base = [...this.timeline.values()][0] ?? 0;
-    const out: Record<string, number> = {};
-    for (const [k, v] of this.timeline.entries()) {
-      out[k] = Math.round(v - base);
-    }
-    return out;
-  }
-
-  private showScrollDebugOverlay(info: {
-    restored: number;
-    max: number;
-    percent: number;
-  }) {
-    if (!this.debugScroll) return;
-
-    const timeline = this.exportTimeline();
-
-    const overlay = document.createElement('div');
-    overlay.className = 'dv-scroll-debug-overlay';
-
-    overlay.innerHTML = `
-    <div class="dv-title">Scroll Restoration Debug</div>
-    <div>Restored: <strong>${info.restored}px</strong></div>
-    <div>Max: <strong>${info.max}px</strong></div>
-    <div>Percent: <strong>${info.percent.toFixed(1)}%</strong></div>
-
-    <div class="dv-subtitle">Timeline (ms)</div>
-    ${Object.entries(timeline)
-        .map(([k, v]) => `<div>${k}: ${v}</div>`)
-        .join('')}
-  `;
-
-    document.body.appendChild(overlay);
-
-    requestAnimationFrame(() => {
-      overlay.classList.add('visible');
-    });
-
-    setTimeout(() => {
-      overlay.classList.remove('visible');
-      setTimeout(() => overlay.remove(), 300);
-    }, 10000);
-  }
-
-
-
 
 
 }

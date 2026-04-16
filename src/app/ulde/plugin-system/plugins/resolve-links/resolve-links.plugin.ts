@@ -1,77 +1,111 @@
 import {
-  UldePlugin,
-  UldePluginContext,
-  UldeDocNode,
-  UldeContentResult,
+  UldeContentPlugin,
+  UldeDomPlugin,
+  UldePluginBundle,
+  UldeDomPluginContext
 } from '../../../core/runtime/ulde.types';
 
-export const ResolveLinksPlugin: UldePlugin = {
+/* ---------------------------------------------------------
+ *  CONTENT PHASE
+ *  Rewrites Markdown links into ULDE internal link format:
+ *    [Guide](guide/setup.md)   → href="#docId:guide/setup"
+ *    [Section](#intro)         → href="#inlineId:intro"
+ *    External links untouched
+ * --------------------------------------------------------- */
+const ResolveLinksContentPlugin: UldeContentPlugin = {
+  id: 'resolve-links-content',
+
+  transform(html: string) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    const anchors = doc.querySelectorAll<HTMLAnchorElement>('a[href]');
+
+    anchors.forEach(a => {
+      const href = a.getAttribute('href');
+      if (!href) return;
+
+      // 1. External links → untouched
+      if (/^(https?:)?\/\//.test(href)) return;
+
+      // 2. Markdown doc links: "something.md"
+      if (href.endsWith('.md')) {
+        const docId = href.replace(/\.md$/, '');
+        a.setAttribute('href', `#docId:${docId}`);
+        return;
+      }
+
+      // 3. Inline section links: "#section-id"
+      if (href.startsWith('#')) {
+        const sectionId = href.slice(1);
+        a.setAttribute('href', `#inlineId:${sectionId}`);
+        return;
+      }
+
+      // 4. Already in ULDE format → leave untouched
+      if (href.startsWith('#docId:') || href.startsWith('#inlineId:')) {
+        return;
+      }
+    });
+
+    return doc.body.innerHTML;
+  }
+};
+
+
+/* ---------------------------------------------------------
+ *  DOM PHASE
+ *  Intercepts clicks on internal links:
+ *    href="#docId:guide/setup"
+ *    href="#inlineId:intro"
+ *
+ *  Emits:
+ *    CustomEvent('ulde-link-click', { detail: { linkId, destId } })
+ *
+ *  DocsViewer listens and performs navigation.
+ * --------------------------------------------------------- */
+const ResolveLinksDomPlugin: UldeDomPlugin = {
   meta: {
-    id: 'ulde.resolve-links',
-    kind: 'content',
+    id: 'ulde.resolve-links-dom',
+    kind: 'dom',
     displayName: 'Internal Link Resolver',
     description: 'Supports both legacy (#docId:, #inlineId:) and standard markdown links.',
-    version: '1.1.0',
+    version: '1.0.0',
     tags: ['links', 'navigation'],
   },
 
-  async transformContent(
-    ctx: UldePluginContext,
-    doc: UldeDocNode
-  ): Promise<UldeContentResult> {
-    if (doc.format !== 'html') {
-      return {
-        content: doc.rawContent,
-        format: doc.format,
-        metadata: doc.metadata,
-        diagnostics: [],
-      };
-    }
+  onDomInit(ctx: UldeDomPluginContext) {
+    const root = ctx.rootElement;
 
-    let html = doc.rawContent;
+    const anchors = root.querySelectorAll<HTMLAnchorElement>('a[href]');
 
-    html = html.replace(/href="([^"]+)"/g, (_m, href) => {
-      // -------------------------------------------------------
-      // 1. Already-correct internal doc link → leave untouched
-      // -------------------------------------------------------
-      if (href.startsWith('#docId:')) {
-        return `href="${href}"`;
-      }
+    anchors.forEach(a => {
+      const raw = a.getAttribute('href');
+      if (!raw || !raw.startsWith('#')) return;
 
-      // -------------------------------------------------------
-      // 2. Already-correct inline link → leave untouched
-      // -------------------------------------------------------
-      if (href.startsWith('#inlineId:')) {
-        return `href="${href}"`;
-      }
+      a.addEventListener('click', (event: Event) => {
+        event.preventDefault();
+        event.stopPropagation();
 
-      // -------------------------------------------------------
-      // 3. Markdown file link → convert to docId
-      // -------------------------------------------------------
-      if (href.endsWith('.md')) {
-        let clean = href.replace(/^\.\//, '').replace(/\.md$/, '');
-        return `href="#docId:${clean}"`;
-      }
+        // Pattern: "#docId:guide/setup" → ['#docId', 'guide/setup']
+        // Pattern: "#inlineId:intro"    → ['#inlineId', 'intro']
+        const [linkId, destId] = raw.split(':');
 
-      // -------------------------------------------------------
-      // 4. Inline section link → convert to inlineId
-      // -------------------------------------------------------
-      if (href.startsWith('#')) {
-        const id = href.substring(1);
-        return `href="#inlineId:${id}"`;
-      }
-
-      // -------------------------------------------------------
-      // 5. External links → leave untouched
-      // -------------------------------------------------------
-      return `href="${href}"`;
+        root.dispatchEvent(new CustomEvent('ulde-link-click', {
+          bubbles: true,
+          detail: { linkId, destId }
+        }));
+      });
     });
+  }
+};
 
-    return {
-      content: html,
-      format: 'html',
-      metadata: doc.metadata,
-      diagnostics: [],
-    };
-  },
+
+/* ---------------------------------------------------------
+ *  BUNDLE EXPORT
+ * --------------------------------------------------------- */
+export const ResolveLinksPlugin: UldePluginBundle = {
+  id: 'resolve-links',
+  content: ResolveLinksContentPlugin,
+  dom: ResolveLinksDomPlugin
 };

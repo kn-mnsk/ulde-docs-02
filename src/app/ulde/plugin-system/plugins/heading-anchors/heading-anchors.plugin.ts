@@ -60,15 +60,19 @@ export const HeadingAnchorsPlugin: UldePlugin = {
     }
 
     try {
-      // Regex: <h1>Title</h1> → <h1 id="title">Title</h1>
+      // Regex: <h1>Title</h1> → <h1 id="title">Title</h1>, except for <h1 id="...">Title</h1>
       const contentWithAnchors = doc.rawContent.replace(
-        /<h([1-6])>([^<]+)<\/h\1>/g,
+        /<h([1-6])\b(?![^>]*\bid\s*=)[^>]*>([^<]+)<\/h\1>/g,
+        // /<h([1-6])>([^<]+)<\/h\1>/g,
         (_match, level, text) => {
           const id = text
             .toLowerCase()
             .trim()
             .replace(/[^\w]+/g, '-') // replace non-word chars with hyphens
             .replace(/^-+|-+$/g, ''); // trim hyphens
+
+          const header = `<h${level} id="${id}">${text}</h${level}>`;
+          console.log(`Log: heading-anchots.plugin.ts header=`, header);
 
           return `<h${level} id="${id}">${text}</h${level}>`;
         }

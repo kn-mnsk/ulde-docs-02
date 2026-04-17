@@ -110,6 +110,8 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
     if (linkId === '#inlineId') {
       this.scrollToInline(destId);
+      setTimeout(() => el.classList.remove('inline-highlight'), 1000); // short delay time time may not hightlight
+
       return;
     }
   }
@@ -117,19 +119,28 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   private scrollToInline(inlineId: string) {
     // Wait for ULDE to finish rendering (contentRendered event)
     requestAnimationFrame(() => {
-      const el = this.root?.querySelector(`#${inlineId}`);
+      console.log(`Log: this.root=`, this.root);
+      const el = document.getElementById(inlineId);
+      // CSS.escape(`#${inlineId}`);
+      /**
+       * docs-viewer.ts:119 ERROR SyntaxError: Failed to execute 'querySelector' on 'Document': '#2-key-features' is not a valid selector.???
+       */
+      // const el = document.querySelector(`#${inlineId}`);
+      // const el = this.root?.querySelector(`#${inlineId}`);
       if (!el) return;
 
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      el.classList.add('inline-highlight');
-      setTimeout(() => el.classList.remove('inline-highlight'), 1200);
+      el.classList.add('inline-highlight');  // whwn backward scrolling, no hihglight??
 
-      // Optional: make editable
-      if (!el.hasAttribute('contenteditable')) {
-        el.setAttribute('contenteditable', 'true');
-      }
-    });
+      // setTimeout(() => el.classList.remove('inline-highlight'), 1000); // short delay time time may not hightlight
+
+      // // Optional: make editable
+      // if (!el.hasAttribute('contenteditable')) {
+      //   el.setAttribute('contenteditable', 'true');
+      // }
+      });
+
   }
 
   protected toggleTheme(event: Event): void {

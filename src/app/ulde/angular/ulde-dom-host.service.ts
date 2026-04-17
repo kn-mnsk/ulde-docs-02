@@ -83,7 +83,7 @@ export class UldeDomHostService {
 
   private async runHook(hook: 'onDomRegister' | 'onDomInit' | 'onDomUpdate' | 'onDomDestroy') {
 
-    console.log(`Log: UldeDomHostService runHook \nhook= `, hook, this.rootElement);
+    // console.log(`Log: UldeDomHostService runHook \nhook= `, hook, this.rootElement);
 
     if (!this.rootElement) return;
 

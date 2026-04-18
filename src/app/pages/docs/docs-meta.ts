@@ -1,7 +1,7 @@
 import { MermaidConfig } from "mermaid"
 
 // Session State
-export type SessionComponent = 'App' | 'DocsViewer';
+export type SessionComponent = 'App' | 'DocsViewer' | 'UldeViewer';
 export interface SessionState {
   component: SessionComponent;
   docId: string | null;
@@ -11,7 +11,7 @@ export interface SessionState {
 }
 export const SESSION_STATE_KEY = 'sessionState';
 export const SESSION_STATE_DEFAULT: SessionState = {
-  component: 'App',
+  component: 'DocsViewer',
   docId: null,
   prevDocId: null,
   scrollPos: 0,

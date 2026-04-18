@@ -72,7 +72,7 @@ export const HeadingAnchorsPlugin: UldePlugin = {
             .replace(/^-+|-+$/g, ''); // trim hyphens
 
           const header = `<h${level} id="${id}">${text}</h${level}>`;
-          console.log(`Log: heading-anchots.plugin.ts header=`, header);
+          // console.log(`Log: heading-anchots.plugin.ts header=`, header);
 
           return `<h${level} id="${id}">${text}</h${level}>`;
         }

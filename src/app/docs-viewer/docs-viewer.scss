@@ -11,8 +11,8 @@ app-docs-viewer {
 }
 
 .topContainer {
-  height: auto;
-  // height: 15vh;
+  // height: auto;
+  height: 15vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -148,10 +148,10 @@ app-docs-viewer {
   opacity: 0;
 }
 
-.markdownViewer {
+.docs-Viewer {
   position: relative;
   height: 85vh;
-  // overflow-y: scroll; // internal scroll
+  overflow-y: scroll; // internal scroll
   overflow-y: auto;
   padding: 0px 16px; // keep inner spacing
   box-sizing: border-box;
@@ -162,12 +162,14 @@ app-docs-viewer {
 }
 
 /* Hide viewer during scroll restoration */
-.markdownViewer.hidden-during-render {
+.docsViewer.hidden-during-render {
   visibility: hidden;
   opacity: 0;
 }
 
-// .markdownViewer g .label-container {
-// // .markdownViewer g .label-container {
-//   word-wrap: break-word;
+// temporary class: scroll by onClick function
+// app-docs-viewer .inline-highlight {
+//   background-color: rgb(219, 219, 22);
+//   transition: background-color 0.7s ease-in-out, color 0.7s ease-in-out;
+//   // transition: background-color 1.5s ease;
 // }

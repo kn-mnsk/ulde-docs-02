@@ -20,7 +20,7 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  // overflow: hidden; // ensure only the markdownViewer scrolls
+  // overflow: hidden; // ensure only the docsViewer scrolls
   transition: background-color 0.7s ease-in-out, color 0.7s ease-in-out;
 }
 
@@ -275,52 +275,52 @@ body[data-theme="light"] {
 }
 
 
-.docsViewer .md-table-container {
-  position: relative;
-  display: flex;
-  // left: 5em;
-  flex-direction: row;
-  justify-content: center;
-}
+// .docsViewer .md-table-container {
+//   position: relative;
+//   display: flex;
+//   // left: 5em;
+//   flex-direction: row;
+//   justify-content: center;
+// }
 
-.docsViewer .md-table {
-  border-collapse: collapse;
-  width: fit-content; //100%;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  // padding: 5px;
-  font-size: 1rem;
-  border-radius: 3em;
-}
+// .docsViewer .md-table {
+//   border-collapse: collapse;
+//   width: fit-content; //100%;
+//   margin-top: 1rem;
+//   margin-bottom: 1rem;
+//   // padding: 5px;
+//   font-size: 1rem;
+//   border-radius: 3em;
+// }
 
-.docsViewer .md-table th {
-  // background-color: rgb(206, 14, 78);
-  background-color: var(--table-header-bg);
-}
+// .docsViewer .md-table th {
+//   // background-color: rgb(206, 14, 78);
+//   background-color: var(--table-header-bg);
+// }
 
-.docsViewer .md-table th,
-.docsViewer .md-table td {
-  border: 1px solid var(--table-border);
-  // border: 1px solid #1bee22;
-  padding: 0.5rem;
-  vertical-align: top;
-}
+// .docsViewer .md-table th,
+// .docsViewer .md-table td {
+//   border: 1px solid var(--table-border);
+//   // border: 1px solid #1bee22;
+//   padding: 0.5rem;
+//   vertical-align: top;
+// }
 
-.docsViewer .md-table td {
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
+// .docsViewer .md-table td {
+//   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+// }
 
-.docsViewer .md-table tr:nth-child(even) {
-  background-color: var(--table-bg-even);
-  // background-color: #05252e;
-  border-bottom: solid 1px rgb(227, 219, 219);
-}
+// .docsViewer .md-table tr:nth-child(even) {
+//   background-color: var(--table-bg-even);
+//   // background-color: #05252e;
+//   border-bottom: solid 1px rgb(227, 219, 219);
+// }
 
-.docsViewer .md-table tr:nth-child(odd) {
-  background-color: var(--table-bg-odd);
-  // background-color: #ce164a;
-  border-bottom: solid 1px rgb(227, 219, 219);
-}
+// .docsViewer .md-table tr:nth-child(odd) {
+//   background-color: var(--table-bg-odd);
+//   // background-color: #ce164a;
+//   border-bottom: solid 1px rgb(227, 219, 219);
+// }
 
 // temporary class: scroll by onClick function
 .docsViewer .inline-highlight {
@@ -330,41 +330,11 @@ body[data-theme="light"] {
 }
 
 
-.docsViewer .folder-container {
-  position: relative;
-  display: flex;
-  // left: 5em;
-  flex-direction: row;
-  justify-content: center;
-  width: stretch;
-}
+// @import './app/docs-viewer/docs-viewer.scss';
 
 
-.docsViewer .align-center25 {
-  position: relative;
-  left: 25%;
-}
 
-.docsViewer .align-center15 {
-  position: relative;
-  left: 15%;
-}
 
-.docsViewer .align-center10 {
-  position: relative;
-  left: 10%;
-}
-
-.docsViewer .align-center7 {
-  position: relative;
-  left: 7%;
-}
-
-// .docsViewer.hidden-during-render {
-//   visibility: hidden;
-//   // background-color: white;
-//   opacity: 0;
-// }
 
 
 /* ---------------------------------------------------------
@@ -392,7 +362,7 @@ body[data-theme="light"] {
 
 
 /* ---------------------------------------------------------
-   Debug Tools for markdownViewer
+   Debug Tools for docsViewer
 --------------------------------------------------------- */
 :root .dv-scroll-debug-overlay {
   // html .dv-scroll-debug-overlay {

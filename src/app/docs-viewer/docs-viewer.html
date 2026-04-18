@@ -1,4 +1,4 @@
-<p>docs-viewer works!</p>
+<!-- <p>docs-viewer works!</p> -->
 <div class="topContainer">
   <div class=" themeContainer">
     <button class="mat-button themaTogglebutton" type="button" (click)="toggleTheme($event)">
@@ -14,11 +14,16 @@
         Doc</strong></button>
   </div>
 
-  <!-- <div class="progress-bar">
+  <div class="progress-bar">
+    <!-- <div class="progress-fill" [style.width.%]="100"></div> -->
     <div class="progress-fill" [style.width.%]="scrollService.scrollPercent()"></div>
-  </div> -->
+  </div>
 
 </div>
 
-<app-ulde-viewer id="docsViewer" class="docsViewer" #docsViewer [$docId]="$docId()" ($isRendered)="onContentRendered($event)"
-></app-ulde-viewer>
+
+<div class="viewer-wrapper">
+  <div class="viewer-overlay hidden"></div>
+  <app-ulde-viewer id="docsViewer" class="docsViewer" #docsViewer [$docId]="$docId()"
+    ($isRendered)="onContentRendered($event)"></app-ulde-viewer>
+</div>

@@ -61,8 +61,8 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
   private viewReady = false;
 
 
-  private scrollListener?: () => void;//
-  private scrollHandler = this.onScroll.bind(this);
+  // private scrollListener?: () => void;//
+  // private scrollHandler = this.onScroll.bind(this);
 
   constructor(
     private scrollService: ScrollService,
@@ -144,13 +144,12 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
 
         const root = document.getElementById('docsViewer');
         console.log(`ngOnChanges`, root);
-        root?.addEventListener('scroll', this.scrollHandler);
-??
-        this.scrollListener = this.renderer.listen(
-          root,
-          'scroll',
-          (event: Event) => this.onScroll(event),
-        );
+        // root?.addEventListener('scroll', this.scrollHandler);
+        // this.scrollListener = this.renderer.listen(
+        //   root,
+        //   'scroll',
+        //   (event: Event) => this.onScroll(event),
+        // );
 
 
         this.updateSessionState(this.$docId());
@@ -177,9 +176,9 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     // this.domHost.detach();
-    if (this.scrollHandler) {
-      this.uldeViewer?.nativeElement.removeEventListener('scroll', this.scrollHandler);
-    }
+    // if (this.scrollHandler) {
+    //   this.uldeViewer?.nativeElement.removeEventListener('scroll', this.scrollHandler);
+    // }
   }
 
   private attachDomHostIfReady() {

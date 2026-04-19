@@ -23,6 +23,7 @@ import { MermaidPlugin } from '../plugin-system/plugins/mermaid/mermaid.plugin';
 import { UldeDomHostService } from './ulde-dom-host.service';
 
 import { findDocPathById } from '../utils/docs/docs-lookup';
+import { ScrollEventDomPlugin } from '../plugin-system/plugins/events/scroll-event.dom.plugin';
 
 
 @Injectable({ providedIn: 'root' })
@@ -60,6 +61,7 @@ export class UldeService {
     await this.registerPlugin(KaTeXPlugin);
     // DOM plugins must be registered in the DOM host:
     this.domHost.registerDomPlugin(ResolveLinksDomPlugin);
+    this.domHost.registerDomPlugin(ScrollEventDomPlugin);
     this.domHost.registerDomPlugin(MermaidPlugin);
   }
 

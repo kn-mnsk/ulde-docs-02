@@ -40,10 +40,11 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   debugScroll = false;
   // debugScroll = true;
   // keep a reference to the handler
-  private uUldeLinkClickHandler = this.onUldeLinkClick.bind(this);
-  private removeScrollListener?: () => void;
+  private uldeLinkClickHandler = this.onUldeLinkClick.bind(this);
+  private uldeScrollHandler = this.onUldeScroll.bind(this);
 
-  private removeKeydownListener?: () => void;
+  // private removeScrollListener?: () => void;
+  // private removeKeydownListener?: () => void;
   private removeBeforeUnloadListener?: () => void;
 
 
@@ -93,15 +94,15 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
   private cleanupDocsViewer(viewer: HTMLElement | null) {
     if (viewer) {
-      viewer.removeEventListener('ulde-link-click', this.uUldeLinkClickHandler);
-      // viewer.removeEventListener('scroll', this.scrollHandler);
+      viewer.removeEventListener('ulde-link-click', this.uldeLinkClickHandler);
+      viewer.removeEventListener('scroll', this.uldeScrollHandler);
       viewer = null;
     }
 
-    if (this.removeScrollListener) {
-      this.removeScrollListener();
-      this.removeScrollListener = undefined;
-    }
+    // if (this.removeScrollListener) {
+    //   this.removeScrollListener();
+    //   this.removeScrollListener = undefined;
+    // }
 
     if (this.removeBeforeUnloadListener) {
       this.removeBeforeUnloadListener();
@@ -129,11 +130,11 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initGlobalListeners(): void {
-    this.removeScrollListener = this.renderer.listen(
-      document,
-      'scroll',
-      (event: Event) => this.onScroll(event),
-    );
+    // this.removeScrollListener = this.renderer.listen(
+    //   document,
+    //   'scroll',
+    //   (event: Event) => this.onScroll(event),
+    // );
     // Before unload: mark refresh
     this.removeBeforeUnloadListener = this.renderer.listen(
       window,
@@ -202,7 +203,6 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-
   onContentRendered(isRendered: boolean) {
     // console.log(`Log: ${this.$title()} onContentRendered() root Html isRendred=`, isRendered);
 
@@ -223,44 +223,70 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
       this.domHost.attach(this.root, this.injector);
 
-      this.root.addEventListener('ulde-link-click', this.uUldeLinkClickHandler);
-
+      this.root.addEventListener('ulde-link-click', this.uldeLinkClickHandler);
+      this.root.addEventListener('ulde-scroll', this.uldeScrollHandler);
 
       this.restoreScroll(this.$docId(), this.root);
 
     });
   }
 
-  // ensures to write scrollPos at most once per animation frame (~60fps max).
-  private onScroll(event: Event): void {
+  private onUldeScroll(event: any): void {
+    console.log(`Log: onUldeScroll`, event);
+    if (event.type === 'ulde-scroll') {
+      const { pos, height } = event.detail;
 
-      console.log(`Log: onScroll`);
-    if (!this.$isBrowser()) return;
+      const docId = this.$activeDocId().docId ?? '';
 
-      console.log(`Log: onScroll`);
-    // Capture the element synchronously — this is CRITICAL
-    const el = event.currentTarget as HTMLElement;
-    const docId = this.$activeDocId().docId ?? '';
-
-    if (!this.rafPending) {
-      this.rafPending = true;
-
-      console.log(`Log: onScroll`);
+      if (!this.rafPending) {
+        this.rafPending = true;
+        // this.handleInternalNavigation(linkId, destId);
+      }
 
       requestAnimationFrame(() => {
-        const pos = el.scrollTop;
-        const height = el.scrollHeight - el.clientHeight;
         this.scrollService.setPosition(docId, pos, height);
         writeSessionState({ scrollPos: pos }, this.$isBrowser());
 
         if (this.debugScroll) {
-          console.log('[DEBUG] scroll event → pos:', pos);
+          console.log('[DEBUG] ulde-scroll event → pos:', pos);
         }
 
         this.rafPending = false;
       });
     }
+
   }
+
+  // // ensures to write scrollPos at most once per animation frame (~60fps max).
+  // private onScroll(event: Event): void {
+
+  //   console.log(`Log: onScroll`);
+  //   if (!this.$isBrowser()) return;
+
+  //   console.log(`Log: onScroll`);
+  //   // Capture the element synchronously — this is CRITICAL
+  //   const el = event.currentTarget as HTMLElement;
+  //   const docId = this.$activeDocId().docId ?? '';
+
+  //   if (!this.rafPending) {
+  //     this.rafPending = true;
+
+  //     console.log(`Log: onScroll`);
+
+  //     requestAnimationFrame(() => {
+  //       const pos = el.scrollTop;
+  //       const height = el.scrollHeight - el.clientHeight;
+  //       this.scrollService.setPosition(docId, pos, height);
+  //       writeSessionState({ scrollPos: pos }, this.$isBrowser());
+
+  //       if (this.debugScroll) {
+  //         console.log('[DEBUG] scroll event → pos:', pos);
+  //       }
+
+  //       this.rafPending = false;
+  //     });
+  //   }
+  // }
 
   private onUldeLinkClick(e: any) {
     console.log(`Log: Onclick`, e);

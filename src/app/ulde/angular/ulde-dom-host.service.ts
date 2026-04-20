@@ -95,6 +95,7 @@ export class UldeDomHostService {
 
       const ctx = this.createContext(plugin.meta.id);
       try {
+        // ctx.logger.info(`[ulde.runhook] ${plugin.meta.id}`);
         await fn.call(plugin, ctx);
       } catch (e) {
         this.diagnostics.update((prev) => [

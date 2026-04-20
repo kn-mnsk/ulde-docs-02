@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, signal, input, computed, Inject, inject, PLATFORM_ID, ViewChild, ElementRef, Injector, Renderer2 } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, signal, input, computed, Inject, inject, PLATFORM_ID, ViewChild, ElementRef, Injector, Renderer2, effect } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { UldeViewer } from '../ulde/angular/ulde-viewer/ulde-viewer';
@@ -9,10 +9,12 @@ import { ScrollService } from './scroll.service';
 import { SessionComponent } from '../pages/docs/docs-meta';
 import { readSessionState, writeSessionState } from './session-state.manage';
 import { UldeDomHostService } from '../ulde/angular/ulde-dom-host.service';
+import { UldeContentResult } from '../ulde/core/runtime/ulde.types';
+import { UldeDebugOverlay } from '../ulde/angular/ulde-debug-overlay/ulde-debug-overlay';
 
 @Component({
   selector: 'app-docs-viewer',
-  imports: [UldeViewer, MatIconModule],
+  imports: [UldeViewer, MatIconModule, UldeDebugOverlay],
   templateUrl: './docs-viewer.html',
   styleUrl: './docs-viewer.scss',
 })
@@ -20,8 +22,9 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
   protected readonly $title = signal("DocsViewer");
 
-  private $isBrowser = signal<boolean>(false);
 
+  private $isBrowser = signal<boolean>(false);
+  private $isRendered = signal<boolean>(false);
   protected $isDarkMode = signal<boolean>(true);
 
   protected $inputDocId = input.required<string>(); // from DocsViewerDirective
@@ -42,6 +45,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   // keep a reference to the handler
   private uldeLinkClickHandler = this.onUldeLinkClick.bind(this);
   private uldeScrollHandler = this.onUldeScroll.bind(this);
+  // private scrollHandler = this.onScroll.bind(this);
 
   // private removeScrollListener?: () => void;
   // private removeKeydownListener?: () => void;
@@ -53,12 +57,12 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
   private root: HTMLElement | null = null;
 
+  // @ViewChild('vieweWrapper', { static: true }) uldeViewer!: ElementRef<HTMLElement>;
   @ViewChild('docsViewer', { static: true }) docsViewer!: ElementRef<HTMLElement>;
 
   constructor(
     protected scrollService: ScrollService,
     private renderer: Renderer2,
-    private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {
     const isBrowser = isPlatformBrowser(this.platformId);
@@ -71,6 +75,12 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
       this.ensureInitialSessionState();
     }
 
+    effect(() => {
+      if (!this.$isBrowser()) return;
+      this.effectWrapper();
+
+    })
+
   }
 
   // -------------------------
@@ -79,23 +89,55 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
 
   }
+
   ngAfterViewInit(): void {
     if (!this.$isBrowser()) return;
 
     this.restoreFromSessionState();
+
+
+
   }
 
   ngOnDestroy(): void {
-    this.cleanupDocsViewer(this.root);
+    if (this.root) {
+      this.cleanupDocsViewer(this.root);
+    }
 
     console.log(`Log ${this.$title()} ngOnDestroy Completed`);
 
   }
 
+  private effectWrapper() {
+    if (this.$isRendered()) {
+
+      console.log(`Log: ${this.$title()} effectWrapper() \nisRendered=`, this.$isRendered());
+
+      // this.root = document.querySelector('.uldeViewer');
+      // this.root = this.uldeViewer?.nativeElement;
+      // if (!this.root) {
+      //   console.warn(`Warn: ${this.$title()} wireInternalLinks() \nroot=`, this.root);
+      //   return;
+      // }
+
+      // this.cleanupDocsViewer(this.root);
+
+      // this.domHost.attach(this.root, this.injector);
+
+      // this.root.addEventListener('ulde-link-click', this.uldeLinkClickHandler);
+      // this.root.addEventListener('ulde-scroll', this.uldeScrollHandler);
+
+      // this.restoreScroll(this.$docId(), this.root);
+
+    }
+
+  }
+
+
   private cleanupDocsViewer(viewer: HTMLElement | null) {
     if (viewer) {
       viewer.removeEventListener('ulde-link-click', this.uldeLinkClickHandler);
-      viewer.removeEventListener('scroll', this.uldeScrollHandler);
+      viewer.removeEventListener('ulde-scroll', this.uldeScrollHandler);
       viewer = null;
     }
 
@@ -203,36 +245,64 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  onContentRendered(isRendered: boolean) {
-    // console.log(`Log: ${this.$title()} onContentRendered() root Html isRendred=`, isRendered);
+  onContentRendered(result: UldeContentResult | null) {
+    if (!this.$isBrowser()) return;
 
-    if (!isRendered || !this.$isBrowser()) return;
+    console.log(`Log: ${this.$title()} onContentRendered`);
 
+    this.docTitle = result?.id;
+    this.root = this.docsViewer?.nativeElement;
+    if (!this.root) {
+      console.warn(`Warn: ${this.$title()} wireInternalLinks() \nroot=`, this.root);
+      return;
+    }
+
+    this.root.innerHTML = result!.content ?? 'Content Not Rendered';
     this.cleanupDocsViewer(this.root);
 
-    requestAnimationFrame(() => {
-      // const rootViewChild = this.docsViewer.nativeElement;
+    this.domHost.attach(this.root, this.injector);
 
-      this.root = document.getElementById('docsViewer');
-      // console.log(`Log: ${this.$title()} onContentRendered() \nrootViewChild=`, rootViewChild, `\nroot=`, root);
-      if (!this.root) {
-        console.warn(`Warn: ${this.$title()} wireInternalLinks() \nroot=`, this.root);
-        return;
-      }
+    this.root.addEventListener('ulde-link-click', this.uldeLinkClickHandler);
+    this.root.addEventListener('ulde-scroll', this.uldeScrollHandler);
 
+    // this.root.addEventListener('scroll', this.scrollHandler);
+    this.restoreScroll(this.$docId(), this.root);
 
-      this.domHost.attach(this.root, this.injector);
-
-      this.root.addEventListener('ulde-link-click', this.uldeLinkClickHandler);
-      this.root.addEventListener('ulde-scroll', this.uldeScrollHandler);
-
-      this.restoreScroll(this.$docId(), this.root);
-
-    });
   }
 
+
+  // // ensures to write scrollPos at most once per animation frame (~60fps max).
+  // private onScroll(event: Event): void {
+  //   console.log('[DEBUG] scroll event → pos:');
+
+  //   if (!this.$isBrowser()) return;
+
+  //   // Capture the element synchronously — this is CRITICAL
+  //   const el = event.currentTarget as HTMLElement;
+  //   const docId = this.$activeDocId().docId ?? '';
+  //   console.log('[DEBUG] scroll event → pos:', el, docId);
+  //   if (!this.rafPending) {
+  //     this.rafPending = true;
+
+  //     requestAnimationFrame(() => {
+  //       const pos = el.scrollTop;
+  //       const height = el.scrollHeight - el.clientHeight;
+  //       this.scrollService.setPosition(docId, pos, height);
+  //       writeSessionState({ scrollPos: pos }, this.$isBrowser());
+
+  //       if (this.debugScroll) {
+  //         console.log('[DEBUG] scroll event → pos:', pos);
+  //       }
+
+  //       this.rafPending = false;
+  //     });
+  //   }
+  // }
+
+
+
   private onUldeScroll(event: any): void {
-    console.log(`Log: onUldeScroll`, event);
+    // console.log(`Log: onUldeScroll`, event);
     if (event.type === 'ulde-scroll') {
       const { pos, height } = event.detail;
 
@@ -316,7 +386,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   private scrollToInline(inlineId: string) {
     // Wait for ULDE to finish rendering (contentRendered event)
     // requestAnimationFrame(() => {
-    console.log(`Log: this.root=`, this.root);
+    // console.log(`Log: scrollToInline this.root=`, this.root);
 
     const el = document.getElementById(inlineId);
     if (!el) return;

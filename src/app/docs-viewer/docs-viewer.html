@@ -1,4 +1,5 @@
 <!-- <p>docs-viewer works!</p> -->
+
 <div class="topContainer">
   <div class=" themeContainer">
     <button class="mat-button themaTogglebutton" type="button" (click)="toggleTheme($event)">
@@ -22,8 +23,13 @@
 </div>
 
 
-<div class="viewer-wrapper">
+<div class="viewer-wrapper" #viewWrapper>
+  <!-- <div class="viewer-overlay"></div> -->
   <div class="viewer-overlay hidden"></div>
-  <app-ulde-viewer id="docsViewer" class="docsViewer" #docsViewer [$docId]="$docId()"
-    ($isRendered)="onContentRendered($event)"></app-ulde-viewer>
+  <!-- <app-ulde-viewer id="uldeViewer" class="uldeViewer" #uldeViewer [$docId]="$docId()"
+    ($isRendered)="onContentRendered($event)"></app-ulde-viewer> -->
+  <app-ulde-viewer [hidden]="true" [$docId]="$docId()" ($contentResult)="onContentRendered($event)"></app-ulde-viewer>
+
+  <div class="docsViewer" #docsViewer></div>
+  <app-ulde-debug-overlay />
 </div>

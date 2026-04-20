@@ -29,17 +29,18 @@ export const ScrollEventDomPlugin: UldeDomPlugin = {
 
   onDomInit(ctx: UldeDomPluginContext) {
     root = ctx.rootElement;
-    ctx.logger.info(`onDomINit`);
+    ctx.logger.info(`onDomINit root`, root);
 
     handler = (event: Event) => {
       event.preventDefault();
       event.stopPropagation();
 
-      ctx.logger.info(`onDomINit`);
+      // ctx.logger.info(`onDomINit`);
 
       const pos = root.scrollTop;
       const height = root.scrollHeight - root.clientHeight;
 
+      // console.log(`[ulde.scroll-event] onDomInit pos=${pos} height=${height}`);
       root.dispatchEvent(new CustomEvent('ulde-scroll', {
         bubbles: true,
         detail: { pos, height }
@@ -57,6 +58,8 @@ export const ScrollEventDomPlugin: UldeDomPlugin = {
   onDomDestroy(ctx: UldeDomPluginContext) {
     // Optional: cleanup
     root.removeEventListener('click', handler);
+    handler = () => {};
+    root.innerHTML = '';
   },
 
 }

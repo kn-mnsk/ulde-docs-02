@@ -28,14 +28,15 @@ export const ScrollEventDomPlugin: UldeDomPlugin = {
 
 
   onDomInit(ctx: UldeDomPluginContext) {
+
+    // ctx.logger.info(`onDomINit root`, root);
+    ctx.logger.info(`onDomINit`);
+
     root = ctx.rootElement;
-    ctx.logger.info(`onDomINit root`, root);
 
     handler = (event: Event) => {
       event.preventDefault();
       event.stopPropagation();
-
-      // ctx.logger.info(`onDomINit`);
 
       const pos = root.scrollTop;
       const height = root.scrollHeight - root.clientHeight;

@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges, signal, inject, ViewChild, ElementRef, AfterViewInit, OnDestroy, Injector, input, output, PLATFORM_ID, Inject, } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, signal, inject, ViewChild, ElementRef, AfterViewInit, OnDestroy, Injector, input, output, PLATFORM_ID, Inject, Renderer2, computed, } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { isPlatformBrowser } from '@angular/common';
@@ -7,6 +7,8 @@ import { UldeContentResult } from '../../core/runtime/ulde.types';
 import { UldeDebugOverlay } from '../ulde-debug-overlay/ulde-debug-overlay';
 
 import { readSessionState, writeSessionState } from '../../../docs-viewer/session-state.manage';
+import { ScrollService } from '../../../docs-viewer/scroll.service';
+import { UldeDomHostService } from '../ulde-dom-host.service';
 
 
 @Component({
@@ -26,23 +28,29 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
 
   $docId = input<string>('');
 
+  private $reload = signal(0);
+  $activeDocId = computed<{ docId: string, reloadCounter: number }>(() => ({
+    docId: this.$docId(),
+    reloadCounter: this.$reload()
+  }));
   // contentRendered = output<HTMLElement>();
 
   private sanitizer = inject(DomSanitizer);
   sanitizedContent!: SafeHtml;
 
-  // @ViewChild('ulde_viewer_root', { static: true }) uldeViewerRoot?: ElementRef<HTMLElement>;
+  // @ViewChild('ulde_viewer_root', { static: false }) uldeViewerRoot?: ElementRef<HTMLElement>;
 
   private readonly ulde = inject(UldeService);
 
-  private readonly injector = inject(Injector);
+  // private readonly injector = inject(Injector);
+  // private readonly domHost = inject(UldeDomHostService);
 
   readonly $loading = signal(false);
   readonly $error = signal<string | null>(null);
   readonly $rendered = signal<UldeContentResult | null>(null);
 
-  $isRendered = output<boolean>();
-  $contentResult = output<UldeContentResult | null>();
+  $isContentRendered = output<{isRendered: boolean, docId: string}>();
+  // $contentResult = output<UldeContentResult | null>();
 
   private viewReady = false;
 
@@ -65,14 +73,10 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
 
   async ngOnChanges(changes: SimpleChanges) {
     if (!this.$isBrowser()) return;
-    // //
-
 
     if (changes['$docId'] && this.$docId()) {
-      await this.loadAndRender(this.$docId());
 
-      // const root = this.uldeViewerRoot?.nativeElement;
-      // console.log(`ngOnChanges`, root);
+      await this.loadAndRender(this.$docId());
 
       if (this.$rendered()) {
 
@@ -80,13 +84,15 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
 
         const content = this.$rendered()?.content;
         if (!content) return;
+
         this.sanitizedContent = this.sanitizer.bypassSecurityTrustHtml(content);
+
         this.viewReady = true;
-        this.$isRendered.emit(true);
-        this.$contentResult.emit(this.$rendered())
+        this.$isContentRendered.emit({isRendered: true, docId: this.$docId()});
       }
     }
   }
+
 
   ngAfterViewInit() {
     if (!this.$isBrowser()) return;
@@ -97,11 +103,8 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
 
   private async loadAndRender(docId: string | undefined) {
 
-    // console.log(`loadAndReady In`, this.viewReady);
-
     if (!docId) return;
 
-    // private async loadAndRender(path: string) {
     this.$loading.set(true);
     this.$error.set(null);
 
@@ -116,6 +119,5 @@ export class UldeViewer implements OnChanges, AfterViewInit, OnDestroy {
       this.$loading.set(false);
     }
   }
-
 
 }

@@ -4,6 +4,7 @@ import {
 } from '../../../core/runtime/ulde.types';
 
 import mermaid from 'mermaid';
+import { mermaidConfigDefault, mermaidConfigDarkTheme, mermaidConfigLightTheme } from '../../../../pages/docs/docs-meta';
 
 export const MermaidPlugin: UldeDomPlugin = {
   meta: {
@@ -22,18 +23,23 @@ export const MermaidPlugin: UldeDomPlugin = {
   async onDomInit(ctx: UldeDomPluginContext) {
     ctx.logger.info(`onDomInit ${this.meta.description} `);
 
-    mermaid.initialize({ startOnLoad: true });
+    // mermaid.initialize(mermaidConfigDefault);
+    mermaid.initialize({
+      startOnLoad: true,     // We control rendering manually
+      securityLevel: 'strict',
+      // legacyMathML: true,
+    });
+
 
     mermaid.run({ querySelector: '.language-mermaid' });
   },
 
-  async onDomUpdate(ctx: UldeDomPluginContext) {
+  async onDomUpdate(ctx: UldeDomPluginContext, isDarkMode?: boolean) {
     // Optional: re-render on updates
-
-    // ctx.logger.info(`onDomUpdate ${this.meta.description}`);
-    // // mermaid.initialize({ startOnLoad: false });
-
-    // mermaid.run({ querySelector: '.language-mermaid' });
+    // ctx.logger.info(`onDomUpdate ${this.meta.description}`, isDarkMode);
+    // mermaid.initialize(
+    //   isDarkMode ? mermaidConfigDarkTheme : mermaidConfigLightTheme
+    // );
   },
 
   async onDomDestroy(ctx: UldeDomPluginContext) {

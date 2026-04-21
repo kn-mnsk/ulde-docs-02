@@ -60,7 +60,7 @@ export interface DocMeta {
 }
 
 export const DocsList: DocMeta[] = [
-// test docs - begin
+  // test docs - begin
   {
     "id": "test.initialdocX",
     "title": "Index",
@@ -103,7 +103,7 @@ export const DocsList: DocMeta[] = [
     "filetype": "md",
     "path": "assets/docs/test/test.katex.md",
   },
-// test docs - end
+  // test docs - end
   {
     "id": "initialdoc",
     "title": "Index",
@@ -348,9 +348,34 @@ export const DocsList: DocMeta[] = [
   },
 ]
 
+export const mermaidConfigDefault: MermaidConfig = {
+  startOnLoad: true,
+  securityLevel: 'strict',
+  theme: 'dark',
+  themeVariables: {
+    fontSize: '18px',
+    fontFamily: 'Trebuchet MS, Verdana, Arial, Sans-Serif',
+    primaryColor: '#2d3748',
+    primaryTextColor: '#e2e8f0',
+    primaryBorderColor: '#63b3ed',
+    secondaryColor: '#4a5568',
+    tertiaryColor: '#2c5282',
+    lineColor: '#63b3ed',
+    nodeTextSize: '20px',
+    edgeLabelFontSize: '14px',
+    labelTextSize: '16px',
+    background: '#1e1e1e',
+    clusterBkg: '#2d3748',
+    clusterBorder: '#63b3ed'
+  },
+  flowchart: { htmlLabels: true, curve: 'linear' }
+};
+
+
 export const mermaidConfigDarkTheme: MermaidConfig = {
-  // startOnLoad: true,
-  // legacyMathML: true,
+
+  startOnLoad: true,
+  securityLevel: 'strict',
   theme: 'dark',
   themeVariables: {
     fontSize: '18px',
@@ -372,8 +397,8 @@ export const mermaidConfigDarkTheme: MermaidConfig = {
 };
 
 export const mermaidConfigLightTheme: MermaidConfig = {
-  // startOnLoad: true,
-  // legacyMathML: true,
+  startOnLoad: true,
+  securityLevel: 'strict',
   theme: 'default',
   themeVariables: {
     fontSize: '16px',

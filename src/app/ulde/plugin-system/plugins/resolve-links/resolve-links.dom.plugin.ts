@@ -38,10 +38,12 @@ export const ResolveLinksDomPlugin: UldeDomPlugin = {
   },
 
   onDomInit(ctx: UldeDomPluginContext) {
-    const root = ctx.rootElement;
-    ctx.logger.info(`onDomINit`);
+    ctx.logger.info(`onDomInit`);
 
+    const root = ctx.rootElement;
+    if (!root) return;
     const links = root.querySelectorAll<HTMLAnchorElement>('a[href]');
+    // console.log(`[ULDE] [resolve-links.dom.plugin] onDomInit root=`, root, `links=`, links);
 
     links.forEach(link => {
       const initialHref = link.getAttribute('href');

@@ -403,16 +403,15 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
   protected toggleTheme(event: Event): void {
     event.preventDefault();
-    console.log(`Log [${this.$title()}] toogleTheme event`, event);
+
     this.$isDarkMode.set(!this.$isDarkMode());
 
     const newTheme = this.$isDarkMode() ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme); // Save preference
-
+    console.log(`Log [${this.$title()}] toogleTheme theme=`, newTheme);
     // mermaid theme update
     requestAnimationFrame(() => {
-
 
       // this.domHost.update('ulde.mermaid', this.$isDarkMode());
       mermaid.initialize(

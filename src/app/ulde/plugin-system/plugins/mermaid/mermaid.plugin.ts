@@ -27,6 +27,7 @@ export const MermaidPlugin: UldeDomPlugin = {
     mermaid.initialize({
       startOnLoad: true,     // We control rendering manually
       securityLevel: 'strict',
+      theme: 'dark',
       // legacyMathML: true,
     });
 

@@ -66,6 +66,10 @@ Markdown Documents
 >- [Lexer and Parser](#docId:doc-marked-0200 "Internal Documents")
 
 
+Mermaid Document
+---
+1. <a href="https://www.mostlylucid.net/blog/switchingthemesformermaid" target="_blank" title="External Site">Switching Themes for Mermaid</a> 
+
 Web APIS, etc.
 ---
 > --- 

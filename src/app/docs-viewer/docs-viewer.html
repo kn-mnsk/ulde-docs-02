@@ -35,7 +35,7 @@
 <div class="docsViewer" #docsViewer>
   <div class="viewer-wrapper" #viewWrapper>
     <div class="viewer-overlay hidden"></div>
-    <app-ulde-viewer id="uldeViewer" class="uldeViewer" #uldeViewer [$docId]="$docId()"
+    <app-ulde-viewer id="uldeViewer" class="uldeViewer" #uldeViewer [$docId]="$activeDocId()"
       ($isContentRendered)="onContentRendered($event)"></app-ulde-viewer>
     <app-ulde-debug-overlay />
   </div>

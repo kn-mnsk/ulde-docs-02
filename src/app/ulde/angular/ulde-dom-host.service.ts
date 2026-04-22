@@ -47,8 +47,8 @@ export class UldeDomHostService {
     this.runHook('onDomInit');
   }
 
-  update(pluginId?: string, data?: any) {
-    this.runHook('onDomUpdate', pluginId, data);
+  update(option?: { pluginId: string, data?: any }) {
+    this.runHook('onDomUpdate');
   }
 
   detach() {
@@ -82,9 +82,9 @@ export class UldeDomHostService {
     };
   }
 
-  private async runHook(hook: 'onDomRegister' | 'onDomInit' | 'onDomUpdate' | 'onDomDestroy', pluginId?: UldePluginId, data?: any) {
+  private async runHook(hook: 'onDomRegister' | 'onDomInit' | 'onDomUpdate' | 'onDomDestroy') {
 
-    console.log(`Log: UldeDomHostService runHook \nhook= `, hook, this.rootElement);
+    // console.log(`Log: [UldeDomHostService] runHook \nhook=`, hook, this.rootElement);
 
     if (!this.rootElement) return;
 
@@ -93,15 +93,17 @@ export class UldeDomHostService {
     for (const plugin of this.plugins) {
       const fn = plugin[hook];
       if (!fn) continue;
-      if (pluginId!==undefined) {
-        if (plugin.meta.id !== pluginId) continue;
-      }
+      // if (pluginId!==undefined) {
+      //   if (plugin.meta.id !== pluginId) continue;
+      // }
 
-      console.log(`Log: [runhook]`, pluginId, plugin.meta.id);
+      // console.log(`Log: [runhook]`, pluginId, plugin.meta.id);
+
       const ctx = this.createContext(plugin.meta.id);
       try {
-        // ctx.logger.info(`[ulde.runhook] ${plugin.meta.id}`);
-        await fn.call(plugin, ctx, data);
+        // ctx.logger.info(`[ulde.runhook] ${plugin.meta.id} option=`, option);
+
+        await fn.call(plugin, ctx);
       } catch (e) {
         this.diagnostics.update((prev) => [
           ...prev,

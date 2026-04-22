@@ -178,7 +178,7 @@ export interface UldeDomPlugin {
   readonly meta: UldePluginMeta;
   onDomRegister?(ctx: UldeDomPluginContext): void | Promise<void>;
   onDomInit?(ctx: UldeDomPluginContext): void | Promise<void>;
-  onDomUpdate?(ctx: UldeDomPluginContext, data?: any): void | Promise<void>;
+  onDomUpdate?(ctx: UldeDomPluginContext): void | Promise<void>;
   onDomDestroy?(ctx: UldeDomPluginContext): void | Promise<void>;
 }
 

@@ -29,12 +29,12 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   private $isRendered = signal<boolean>(false);
   protected $isDarkMode = signal<boolean>(true);
 
-  protected $inputDocId = input.required<string>(); // from DocsViewerDirective
+  // protected $inputDocId = input.required<string>(); // from DocsViewerDirective
   protected $docId = signal<string>('initialdoc');
   private $reload = signal(0);
 
   $activeDocId = computed<{ docId: string, reloadCounter: number }>(() => ({
-    docId: this.$docId() ?? this.$inputDocId(),
+    docId: this.$docId(),
     reloadCounter: this.$reload()
   }));
 
@@ -199,7 +199,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
     // console.log(`Log: ${this.$title()} restoreFromSessionState()` +   `\nstate=${JSON.stringify(state, null, 2)}`);
 
     if (!state.refreshed) {
-      // Normal start - show App template which is main screen
+      // Normal start - show DocsViewer template which is main screen
       return;
     }
 
@@ -228,8 +228,8 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
       this.scrollService.setPosition(docId, scrollPos, 0);
 
       this.$docId.set(docId);
-
-      // console.log(`Log: ${this.$title()} restoreFromSessionState() DocsViewer Refresh` + `\nRestored docId=${docId}, scrollPos=${scrollPos}`);
+      this.$reload.update(n => n + 1);
+      console.log(`Log: ${this.$title()} restoreFromSessionState() DocsViewer Refresh` + `\nRestored docId=${docId}, scrollPos=${scrollPos}`);
 
       return;
     }
@@ -410,18 +410,8 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme); // Save preference
     console.log(`Log [${this.$title()}] toogleTheme theme=`, newTheme);
-    // mermaid theme update
-    requestAnimationFrame(() => {
-
-      // this.domHost.update('ulde.mermaid', this.$isDarkMode());
-      mermaid.initialize(
-        this.$isDarkMode() ? mermaidConfigDarkTheme : mermaidConfigLightTheme);
-
-      // force effect to reload markdown, in order to enable thema chage
-    });
-
+    // this.restoreFromSessionState();
     this.$reload.update(n => n + 1);
-
   }
 
   protected backToIndex(event?: MouseEvent): void {

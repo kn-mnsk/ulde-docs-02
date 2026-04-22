@@ -1,4 +1,5 @@
 import {
+  UldePluginId,
   UldeDomPlugin,
   UldeDomPluginContext,
 } from '../../../core/runtime/ulde.types';
@@ -21,26 +22,23 @@ export const MermaidPlugin: UldeDomPlugin = {
   },
 
   async onDomInit(ctx: UldeDomPluginContext) {
-    ctx.logger.info(`onDomInit ${this.meta.description} `);
+    // ctx.logger.info(`onDomInit`);
 
+
+    let theme = localStorage.getItem('theme');
+    ctx.logger.info(`onDomInit theme=${theme}`);
+    if (!theme) {
+      theme = 'dark';
+    }
+    // const thema = option?.data;
     // mermaid.initialize(mermaidConfigDefault);
-    mermaid.initialize({
-      startOnLoad: true,     // We control rendering manually
-      securityLevel: 'strict',
-      theme: 'dark',
-      // legacyMathML: true,
-    });
-
+    mermaid.initialize((theme === 'dark') ? mermaidConfigDarkTheme : mermaidConfigLightTheme);
 
     mermaid.run({ querySelector: '.language-mermaid' });
   },
 
-  async onDomUpdate(ctx: UldeDomPluginContext, isDarkMode?: boolean) {
+  async onDomUpdate(ctx: UldeDomPluginContext) {
     // Optional: re-render on updates
-    // ctx.logger.info(`onDomUpdate ${this.meta.description}`, isDarkMode);
-    // mermaid.initialize(
-    //   isDarkMode ? mermaidConfigDarkTheme : mermaidConfigLightTheme
-    // );
   },
 
   async onDomDestroy(ctx: UldeDomPluginContext) {

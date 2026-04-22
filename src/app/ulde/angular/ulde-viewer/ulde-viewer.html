@@ -2,19 +2,19 @@
 
 <div>
 
-  @if ($loading()) {
+  @if (loading) {
   <div class="ulde-viewer__loading">
     Loading…
   </div>
   } @else {
 
-  @if ($error()) {
+  @if (error) {
   <div class="ulde-viewer__error">
-    {{ $error() }}
+    {{ error }}
   </div>
   } @else {
 
-  @if ($rendered()) {
+  @if (contentResult) {
   <div id="ulde_viewer_root" #ulde_viewer_root class="ulde-viewer__content" [innerHTML]="sanitizedContent"></div>
   <app-ulde-debug-overlay />
   }

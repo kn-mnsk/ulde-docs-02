@@ -286,18 +286,14 @@ body[data-theme="light"] {
 // @import './app/docs-viewer/docs-viewer.scss';
 
 
-
-
-
-
 /* ---------------------------------------------------------
    Mermaid
 --------------------------------------------------------- */
 
 .docsViewer .language-mermaid {
   position: relative;
-  width: 80vw;
-  padding: 1em; // test
+  width: auto;
+  padding: 1rem;
   // background-color: rgb(227, 229, 233); // for debug use
   display: flex;
   flex-direction: row;
@@ -311,6 +307,23 @@ body[data-theme="light"] {
   // font-size: 10px;
 }
 
+/*
+Source - https://stackoverflow.com/a/79199554
+Posted by grappler
+Retrieved 2026-04-23, License - CC BY-SA 4.0
+*/
+.docsViewer .mermaid-container {
+    width: auto;
+    height: auto;
+    overflow: hidden;
+    border: 2px solid #55db50;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.docsViewer .mermaid-container svg {
+    cursor: grab;
+}
 
 
 /* ---------------------------------------------------------

@@ -25,6 +25,7 @@ const $title = signal<string>('session-state.manage');
         prevDocId: parsed.prevDocId ?? null,
         scrollPos: parsed.scrollPos ?? 0,
         refreshed: parsed.refreshed ?? false,
+        docTheme: parsed.docTheme ?? '',
       };
     } catch {
       return SESSION_STATE_DEFAULT;

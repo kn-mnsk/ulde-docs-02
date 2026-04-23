@@ -41,6 +41,7 @@
     "@angular/build": "^21.2.0",
     "@angular/cli": "^21.2.0",
     "@angular/compiler-cli": "^21.2.0",
+    "@panzoom/panzoom": "^4.6.2",
     "@types/express": "^5.0.1",
     "@types/katex": "^0.16.7",
     "@types/markdown-it": "^14.1.2",

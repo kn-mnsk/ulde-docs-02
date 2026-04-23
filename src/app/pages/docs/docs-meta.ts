@@ -8,6 +8,7 @@ export interface SessionState {
   prevDocId: string | null;
   scrollPos: number;
   refreshed: boolean;
+  docTheme: string;
 }
 export const SESSION_STATE_KEY = 'sessionState';
 export const SESSION_STATE_DEFAULT: SessionState = {
@@ -16,6 +17,7 @@ export const SESSION_STATE_DEFAULT: SessionState = {
   prevDocId: null,
   scrollPos: 0,
   refreshed: false,
+  docTheme: 'dark',
 };
 // session state
 

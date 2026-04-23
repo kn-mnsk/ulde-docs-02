@@ -5,7 +5,7 @@ import { UldeViewer } from '../ulde/angular/ulde-viewer/ulde-viewer';
 import { MatIconModule } from '@angular/material/icon';
 
 import mermaid from 'mermaid';
-import { mermaidConfigDarkTheme, mermaidConfigLightTheme } from '../pages/docs/docs-meta';
+import { mermaidConfigDarkTheme, mermaidConfigLightTheme, SessionState } from '../pages/docs/docs-meta';
 
 import { ScrollService } from './scroll.service';
 import { SessionComponent } from '../pages/docs/docs-meta';
@@ -47,6 +47,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   // keep a reference to the handler
   private uldeLinkClickHandler = this.onUldeLinkClick.bind(this);
   private uldeScrollHandler = this.onUldeScroll.bind(this);
+  private mermaidWheelHandler = this.onMermaidWheel.bind(this);
   // private scrollHandler = this.onScroll.bind(this);
 
   // private removeScrollListener?: () => void;
@@ -72,7 +73,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
 
     if (isBrowser) {
-      this.initTheme();
+      // this.initTheme();
       this.initGlobalListeners();
       this.ensureInitialSessionState();
     }
@@ -147,8 +148,8 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   private cleanupDocsViewer(root: HTMLElement | null) {
     if (root) {
       root.removeEventListener('ulde-link-click', this.uldeLinkClickHandler);
-
       root.removeEventListener('ulde-scroll', this.uldeScrollHandler);
+      root.removeEventListener('mermaid-wheel', this.mermaidWheelHandler);
       // viewer = null;
     }
 
@@ -170,8 +171,12 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   // -------------------------
 
   private initTheme(): void {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    const { docTheme } = readSessionState(this.$isBrowser()) as SessionState;
+    document.documentElement.setAttribute('data-theme', docTheme);
+
+    // const savedTheme = localStorage.getItem('theme') || 'light';
+    // document.documentElement.setAttribute('data-theme', savedTheme);
   }
 
   private initGlobalListeners(): void {
@@ -210,7 +215,8 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
         docId: null,
         prevDocId: null,
         refreshed: false,
-        scrollPos: 0
+        scrollPos: 0,
+        docTheme: '',
       },
         this.$isBrowser()
       );
@@ -268,10 +274,20 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
       this.root.addEventListener('ulde-link-click', this.uldeLinkClickHandler);
       this.root.addEventListener('ulde-scroll', this.uldeScrollHandler);
+      this.root.addEventListener('mermaid-wheel', this.mermaidWheelHandler);
 
       this.restoreScroll(this.$docId(), this.root);
     });
   }
+
+  private onMermaidWheel(event: any): void {
+    if (event.type === 'mermaid-wheel') {
+      console.log(`Log: [DocsViewer] onUldeWhell`, event);
+
+    }
+
+  }
+
 
   private onUldeScroll(event: any): void {
     // console.log(`Log: [DocsViewer] onUldeScroll`, event);
@@ -408,7 +424,8 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
     const newTheme = this.$isDarkMode() ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme); // Save preference
+    writeSessionState({ docTheme: newTheme }, this.$isBrowser());
+    // localStorage.setItem("theme", newTheme); // Save preference
     console.log(`Log [${this.$title()}] toogleTheme theme=`, newTheme);
     // this.restoreFromSessionState();
     this.$reload.update(n => n + 1);

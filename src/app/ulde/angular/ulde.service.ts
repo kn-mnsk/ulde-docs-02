@@ -16,14 +16,16 @@ import { ContentEngine } from '../core/content-engine/content-engine';
 // Built‑in plugins
 import { HeadingAnchorsPlugin } from '../plugin-system/plugins/heading-anchors/heading-anchors.plugin';
 import { MarkdownPlugin } from '../plugin-system/plugins/markdown/markdown.plugin';
-import { ResolveLinksPlugin } from '../plugin-system/plugins/resolve-links/resolve-links.plugin';
-import { KaTeXPlugin } from '../plugin-system/plugins/katex/katex.plugin';
+// import { ResolveLinksPlugin } from '../plugin-system/plugins/resolve-links/resolve-links.plugin';
+// import { KaTeXPlugin } from '../plugin-system/plugins/katex/katex.plugin';
 import { ResolveLinksDomPlugin } from '../plugin-system/plugins/resolve-links/resolve-links.dom.plugin';
-import { MermaidPlugin } from '../plugin-system/plugins/mermaid/mermaid.plugin';
+import { MermaidDomPlugin } from '../plugin-system/plugins/mermaid/mermaid.dom.plugin';
 import { UldeDomHostService } from './ulde-dom-host.service';
 
-import { findDocPathById } from '../utils/docs/docs-lookup';
+// import { findDocPathById } from '../utils/docs/docs-lookup';
 import { ScrollEventDomPlugin } from '../plugin-system/plugins/events/scroll-event.dom.plugin';
+import { ThemeDomPlugin } from '../plugin-system/plugins/theme/theme.dom.plugin';
+import { KatexDomPlugin } from '../plugin-system/plugins/katex/katex.dom.plugin';
 
 
 @Injectable({ providedIn: 'root' })
@@ -56,11 +58,14 @@ export class UldeService {
   private async registerBuiltInPlugins() {
     await this.registerPlugin(MarkdownPlugin);
     await this.registerPlugin(HeadingAnchorsPlugin);
-    await this.registerPlugin(KaTeXPlugin);
+    // await this.registerPlugin(KaTeXPlugin);
     // DOM plugins must be registered in the DOM host:
+    this.domHost.registerDomPlugin(ThemeDomPlugin);
     this.domHost.registerDomPlugin(ResolveLinksDomPlugin);
     this.domHost.registerDomPlugin(ScrollEventDomPlugin);
-    this.domHost.registerDomPlugin(MermaidPlugin);
+    this.domHost.registerDomPlugin(KatexDomPlugin);
+
+    this.domHost.registerDomPlugin(MermaidDomPlugin);
   }
 
   async registerPlugin(plugin: UldePlugin) {
@@ -71,11 +76,11 @@ export class UldeService {
     return this.registry.listPlugins();
   }
 
-  async loadDocById(docId: string): Promise<{text: string, path: string}>  {
+  async loadDocById(docId: string): Promise<{ text: string, path: string }> {
     return this.contentEngine.loadDocById(docId);
   }
 
-  async loadDocMetaById(docId: string): Promise<UldeContentSource>  {
+  async loadDocMetaById(docId: string): Promise<UldeContentSource> {
     return this.contentEngine.loadDocMetaById(docId);
   }
 

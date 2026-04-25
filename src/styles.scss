@@ -293,12 +293,26 @@ body[data-theme="light"] {
 .docsViewer .language-mermaid {
   position: relative;
   width: auto;
-  padding: 1rem;
+  // padding: 1rem;
+  margin: 0.5rem;
+  // border: 2px solid #55db50;
   // background-color: rgb(227, 229, 233); // for debug use
   display: flex;
   flex-direction: row;
   justify-content: center;
 
+}
+
+.docsViewer .mermaid-container .mermaid-button-container {
+  position: relative;
+  display: inline flow-root;
+  margin: 0.5rem;
+  width: auto;
+}
+.mermaid-button-container .mermaid-reset-button, .mermaid-button-container .mermaid-zoomin-button,  .mermaid-button-container .mermaid-zoomout-button {
+
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 .docsViewer .langauge-mermaid g text {
@@ -313,16 +327,16 @@ Posted by grappler
 Retrieved 2026-04-23, License - CC BY-SA 4.0
 */
 .docsViewer .mermaid-container {
-    width: auto;
-    height: auto;
-    overflow: hidden;
-    border: 2px solid #55db50;
-    position: relative;
-    margin-bottom: 10px;
+  width: auto;
+  height: auto;
+  overflow: hidden;
+  border: 2px solid #55db50;
+  position: relative;
+  margin-bottom: 10px;
 }
 
 .docsViewer .mermaid-container svg {
-    cursor: grab;
+  cursor: grab;
 }
 
 

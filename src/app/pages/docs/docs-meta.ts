@@ -375,7 +375,7 @@ export const mermaidConfigDefault: MermaidConfig = {
 
 
 export const mermaidConfigDarkTheme: MermaidConfig = {
-  startOnLoad: true,
+  startOnLoad: false,
   securityLevel: 'strict',
   theme: 'dark',
   themeVariables: {
@@ -398,7 +398,7 @@ export const mermaidConfigDarkTheme: MermaidConfig = {
 };
 
 export const mermaidConfigLightTheme: MermaidConfig = {
-  startOnLoad: true,
+  startOnLoad: false,
   securityLevel: 'strict',
   theme: 'default',
   themeVariables: {

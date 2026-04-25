@@ -106,7 +106,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
     this.root = null;
     this.removeBeforeUnloadListener = undefined;
 
-
+    this.domHost.detach();
 
     if (this.removeBeforeUnloadListener) {
       this.removeBeforeUnloadListener = undefined;
@@ -164,6 +164,9 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
     // Ensure there is at least a baseline state
     const current = readSessionState(this.$isBrowser());
     writeSessionState(current, this.$isBrowser());
+
+    // ensure initializing doc theme
+    this.$isDarkMode.set((current.docTheme === 'dark')?  true : false);
   }
 
   // -------------------------

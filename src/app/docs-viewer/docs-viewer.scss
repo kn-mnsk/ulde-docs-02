@@ -33,7 +33,9 @@ app-docs-viewer {
 }
 
 .themaTogglebutton {
-  background: rgb(0, 255, 0, .8);
+  background: var(--bg-color);
+  // background: rgb(0, 255, 0, .8);
+  color: var(--text-color);
   border-radius: 10px;
   margin: 5px;
   // padding: 4px 5px;
@@ -59,7 +61,10 @@ app-docs-viewer {
 }
 
 .docId {
-  background: rgba(0, 255, 255, 0.8);
+  background: var(--bg-color);
+  // background: rgb(0, 255, 0, .8);
+  color: var(--text-color);
+  // background: rgba(0, 255, 255, 0.8);
   border-radius: 10px;
   padding: 4px 10px;
   margin-top: 10px;
@@ -82,6 +87,9 @@ app-docs-viewer {
 
 .backToIndex,
 .backToPrevious {
+  background: var(--bg-color);
+  // background: rgb(0, 255, 0, .8);
+  color: var(--text-color);
   position: absolute;
   right: 10px;
   padding: 4px 10px;
@@ -91,13 +99,13 @@ app-docs-viewer {
 
 .backToIndex {
   top: 10px;
-  background: rgba(0, 255, 255, .8);
+  // background: rgba(0, 255, 255, .8);
   width: auto;
 }
 
 .backToPrevious {
   top: 45px;
-  background: rgba(59, 215, 236, 0.8);
+  // background: rgba(59, 215, 236, 0.8);
   width: auto;
 }
 

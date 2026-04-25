@@ -75,44 +75,46 @@ export const MarkdownPlugin: UldePlugin = {
 
 
       // content manipulation for mermaid source so as to impelment SVG panning, zooming codes in mermaid.dom.plugin.ts, that is, to wrap <pre><code class='languale-mermaid'>...</code></pre> block by <div class='mermaid-container' id='mermaid-container'>...</div>
-      const wrapped = html.replace(
-        /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g,
-        (match, text) => {
-          const divEl = document.createElement('div');
-          divEl.id = "mermaid-container";
-          divEl.className = "mermaid-container";
+      // const wrapped = html.replace(
+      //   /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g,
+      //   (match, text) => {
+      //     const divEl = document.createElement('div');
+      //     divEl.id = "mermaid-container";
+      //     divEl.className = "mermaid-container";
 
-          // ctx.logger.info(`transformContent div Element`, divEl);
-          const zoomInButton = document.createElement('button');
-          zoomInButton.className = "mermaid-zoomin-button";
-          const zoomOutButton = document.createElement('button');
-          zoomOutButton.className = "mermaid-zoomout-button";
-          const resetOutButton = document.createElement('button');
-          resetOutButton.className = "mermaid-reset-button";
+      //     // ctx.logger.info(`transformContent div Element`, divEl);
+      //     const zoomInButton = document.createElement('button');
+      //     zoomInButton.className = "mermaid-zoomin-button";
+      //     const zoomOutButton = document.createElement('button');
+      //     zoomOutButton.className = "mermaid-zoomout-button";
+      //     const resetOutButton = document.createElement('button');
+      //     resetOutButton.className = "mermaid-reset-button";
 
-          const pre = document.createElement('pre');
-          const code = document.createElement('code');
-          code.className = "language-mermaid";
-          code.innerHTML = text;
-          pre.append(code);
+      //     const pre = document.createElement('pre');
+      //     const code = document.createElement('code');
+      //     code.className = "language-mermaid";
+      //     code.innerHTML = text;
+      //     pre.append(code);
 
-          divEl.append(zoomInButton);
-          divEl.append(zoomOutButton);
-          divEl.append(resetOutButton);
-          divEl.append(pre);
-          // ctx.logger.info(`transformContent div Element`, divEl.innerHTML);
+      //     divEl.append(zoomInButton);
+      //     divEl.append(zoomOutButton);
+      //     divEl.append(resetOutButton);
+      //     divEl.append(pre);
+      //     // ctx.logger.info(`transformContent div Element`, divEl.innerHTML);
 
-          return divEl.outerHTML;
-          // return `<div class="mermaid-container" id="mermaid-container"><pre><code class="language-mermaid">${code}</code></pre></div>`;
-        }
-      );
+      //     return divEl.outerHTML;
+      //     // return `<div class="mermaid-container" id="mermaid-container"><pre><code class="language-mermaid">${code}</code></pre></div>`;
+      //   }
+      // );
+
       // ctx.logger.info(`transformContent mermaid-container`, wrapped);
 
       return {
         id: doc.id,
         path: doc.path,
         title: doc.title,
-        content: wrapped,
+        content: html,
+        // content: wrapped,
         format: 'html',
         metadata: doc.metadata,
         diagnostics: [],

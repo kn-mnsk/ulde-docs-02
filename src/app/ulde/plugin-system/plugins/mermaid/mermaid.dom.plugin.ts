@@ -31,8 +31,11 @@ export const MermaidDomPlugin: UldeDomPlugin = {
   async onDomInit(ctx: UldeDomPluginContext) {
     // ctx.logger.info(`onDomInit`);
 
+    const root = ctx.rootElement;
+
+
+    // mermaid initializing in sync with docTeme;
     const { docTheme } = readSessionState(true) as SessionState || 'dark';
-    // let theme = localStorage.getItem('theme');
     ctx.logger.info(`onDomInit theme=${docTheme}`);
     mermaid.initialize((docTheme === 'dark') ? mermaidConfigDarkTheme : mermaidConfigLightTheme);
 
@@ -41,58 +44,99 @@ export const MermaidDomPlugin: UldeDomPlugin = {
     Posted by grappler
     Retrieved 2026-04-23, License - CC BY-SA 4.0
     */
+
+    // mermaid code block <pre><code class="language-container">...</code></pre> by mardown-it
+    // const mermaidNodes = ctx.rootElement.querySelectorAll<HTMLElement>('.language-mermaid');
+    // ctx.logger.info(`onDomInit NodeListOf<HTMLElement>`, mermaidNodes);
+
+    // A callback to call after each diagram is rendered.
     const postRenderCB = (id: any) => {
 
-      const containers = document.querySelectorAll<HTMLDivElement>(".mermaid-container");
-      if (!containers) return;
+      // mermaid code block <pre><code class="language-container">...</code></pre> by mardown-it
+      const mermaidNodes = ctx.rootElement.querySelectorAll<HTMLElement>('.language-mermaid');
+      console.log(`onDomInit NodeListOf<HTMLElement>`, mermaidNodes);
 
-      containers.forEach((container: HTMLDivElement) => {
-        const svgElement = container.querySelector("svg");
-        if (!svgElement) return;
+      mermaidNodes.forEach((currentNode, index) => {
+        console.log(`onDomInit NodeListOf<HTMLElement>`, index, id);
+
+        // if (id === index) {
+        // ctx.logger.info(`onDomInit mermaid node`, currentNode);
+        const Id = `#mermaid-${id}`;
+        const svg = currentNode.querySelector(Id);
+          console.log(`onDomInit NodeListOf<HTMLElement>`, `#mermaid-${id}`, svg, currentNode);
+        if (!svg) return;
 
         // Initialize Panzoom
-        const panzoom = Panzoom(svgElement, {
+        const panzoom = Panzoom(svg as SVGElement, {
           maxScale: 5,
           minScale: 0.5,
           step: 0.1,
         });
 
-        const zoomin = document.querySelector<HTMLButtonElement>('.mermaid-zoomin-button');
-        if (zoomin) {
-          const handler = (event: Event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            panzoom.zoomIn({ animate: true });
-          };
-          zoomin.addEventListener('click', handler);
-          zoomInHandlers.push({ button: zoomin, handler });
+        const mermaidContainer = document.createElement('div');
+        mermaidContainer.className = "mermaid-container";
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = "mermaid-button-container";
+        // zooin
+        const zoomIn = document.createElement('button');
+        zoomIn.className = "mermaid-zoomin-button";
+        zoomIn.innerText = "+";
+        const handlerIn = (event: Event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          panzoom.zoomIn({ animate: true });
+        };
+        zoomIn.addEventListener('click', handlerIn);
+        zoomInHandlers.push({ button: zoomIn, handler: handlerIn });
+        // zoomout
+        const zoomOut = document.createElement('button');
+        zoomOut.className = "mermaid-zoomout-button";
+        zoomOut.innerText = "-";
+        const handlerOut = (event: Event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          panzoom.zoomOut({ animate: true });
+        };
+        zoomOut.addEventListener('click', handlerOut);
+        zoomOutHandlers.push({ button: zoomOut, handler: handlerOut });
+        // rset
+        const reset = document.createElement('button');
+        reset.className = "mermaid-reset-button";
+        reset.innerText = "reset";
+        const handlerReset = (event: Event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          panzoom.reset({ animate: false });
+        };
 
-        }
+        reset.addEventListener('click', handlerReset);
+        resetHandlers.push({ button: reset, handler: handlerReset });
 
-        const zoomout = document.querySelector<HTMLButtonElement>('.mermaid-zoomout-button');
-        if (zoomout) {
-          const handler = (event: Event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            panzoom.zoomOut({ animate: true });
-          };
+        buttonContainer.appendChild(zoomIn);
+        buttonContainer.appendChild(zoomOut);
+        buttonContainer.appendChild(reset);
+        mermaidContainer.appendChild(buttonContainer);
 
-          zoomout.addEventListener('click', handler);
-          zoomOutHandlers.push({ button: zoomout, handler });
-        }
+        // currentNode.insertBefore(buttonContainer, currentNode)
+        const preNode = currentNode.parentNode;
+        //     if (!preNode) return;
+        preNode?.insertBefore(mermaidContainer, currentNode);
 
-        const reset = document.querySelector<HTMLButtonElement>('.mermaid-reset-button');
-        if (reset) {
-          const handler = (event: Event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            panzoom.reset({ animate: false });
-          };
+        // // console.log(`[onDomInit] new Node before replace`, preNode.be);
+        mermaidContainer.appendChild(currentNode);
+        // preNode.insertBefore(mermaidContainer, currentNode);
+        // mermaidContainer.appendChild(currentNode);
 
-          reset.addEventListener('click', handler);
-          resetHandlers.push({ button: reset, handler });
-        }
 
+        // mermaidContainer.appendChild(buttonContainer);
+
+
+        // currentNode.replaceChild(newNode, currentNode);
+        // currentNode.insertAdjacentElement('beforebegin', newNode);
+
+        ctx.logger.info(`onDomInit newNode  after replace index=${index}`, mermaidContainer);
+        // ctx.logger.info(`transformContent div Element`, divEl.innerHTML);
+        // }
       });
 
     }

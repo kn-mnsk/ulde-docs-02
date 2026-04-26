@@ -290,12 +290,15 @@ body[data-theme="light"] {
    Mermaid
 --------------------------------------------------------- */
 
-.docsViewer .language-mermaid {
+.docsViewer .mermaid-container .language-mermaid {
   position: relative;
   width: auto;
-  // padding: 1rem;
+  height: auto;
+  padding: 1rem;
   margin: 0.5rem;
-  // border: 2px solid #55db50;
+  border: 0.5px dashed;// var(--text-color);
+
+  color: var(--text-color);
   // background-color: rgb(227, 229, 233); // for debug use
   display: flex;
   flex-direction: row;
@@ -305,14 +308,20 @@ body[data-theme="light"] {
 
 .docsViewer .mermaid-container .mermaid-button-container {
   position: relative;
+
   display: inline flow-root;
+  // border: 2px solid #55db50;
   margin: 0.5rem;
   width: auto;
 }
-.mermaid-button-container .mermaid-reset-button, .mermaid-button-container .mermaid-zoomin-button,  .mermaid-button-container .mermaid-zoomout-button {
+
+.mermaid-button-container .mermaid-reset-button,
+.mermaid-button-container .mermaid-zoomin-button,
+.mermaid-button-container .mermaid-zoomout-button {
 
   background-color: var(--bg-color);
   color: var(--text-color);
+  // z-index:90;
 }
 
 .docsViewer .langauge-mermaid g text {

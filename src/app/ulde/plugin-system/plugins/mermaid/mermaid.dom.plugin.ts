@@ -8,6 +8,7 @@ import mermaid from 'mermaid';
 import Panzoom from '@panzoom/panzoom'
 import { mermaidConfigDefault, mermaidConfigDarkTheme, mermaidConfigLightTheme, SessionState } from '../../../../pages/docs/docs-meta';
 import { readSessionState } from '../../../../docs-viewer/session-state.manage';
+import { merge } from 'rxjs';
 
 let handler!: (event: WheelEvent) => void;
 let container!: HTMLElement;
@@ -46,103 +47,79 @@ export const MermaidDomPlugin: UldeDomPlugin = {
     */
 
     // mermaid code block <pre><code class="language-container">...</code></pre> by mardown-it
-    // const mermaidNodes = ctx.rootElement.querySelectorAll<HTMLElement>('.language-mermaid');
+    const mermaidNodes = root.querySelectorAll<HTMLElement>('.language-mermaid');
     // ctx.logger.info(`onDomInit NodeListOf<HTMLElement>`, mermaidNodes);
 
     // A callback to call after each diagram is rendered.
-    const postRenderCB = (id: any) => {
+    const postRenderCB = (svgId: any) => {
+      const selectorId = "#" + svgId;
+      const svg = root.querySelector(selectorId) as SVGElement;
 
-      // mermaid code block <pre><code class="language-container">...</code></pre> by mardown-it
-      const mermaidNodes = ctx.rootElement.querySelectorAll<HTMLElement>('.language-mermaid');
-      console.log(`onDomInit NodeListOf<HTMLElement>`, mermaidNodes);
-
-      mermaidNodes.forEach((currentNode, index) => {
-        console.log(`onDomInit NodeListOf<HTMLElement>`, index, id);
-
-        // if (id === index) {
-        // ctx.logger.info(`onDomInit mermaid node`, currentNode);
-        const Id = `#mermaid-${id}`;
-        const svg = currentNode.querySelector(Id);
-          console.log(`onDomInit NodeListOf<HTMLElement>`, `#mermaid-${id}`, svg, currentNode);
-        if (!svg) return;
-
-        // Initialize Panzoom
-        const panzoom = Panzoom(svg as SVGElement, {
-          maxScale: 5,
-          minScale: 0.5,
-          step: 0.1,
-        });
-
-        const mermaidContainer = document.createElement('div');
-        mermaidContainer.className = "mermaid-container";
-        const buttonContainer = document.createElement('div');
-        buttonContainer.className = "mermaid-button-container";
-        // zooin
-        const zoomIn = document.createElement('button');
-        zoomIn.className = "mermaid-zoomin-button";
-        zoomIn.innerText = "+";
-        const handlerIn = (event: Event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          panzoom.zoomIn({ animate: true });
-        };
-        zoomIn.addEventListener('click', handlerIn);
-        zoomInHandlers.push({ button: zoomIn, handler: handlerIn });
-        // zoomout
-        const zoomOut = document.createElement('button');
-        zoomOut.className = "mermaid-zoomout-button";
-        zoomOut.innerText = "-";
-        const handlerOut = (event: Event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          panzoom.zoomOut({ animate: true });
-        };
-        zoomOut.addEventListener('click', handlerOut);
-        zoomOutHandlers.push({ button: zoomOut, handler: handlerOut });
-        // rset
-        const reset = document.createElement('button');
-        reset.className = "mermaid-reset-button";
-        reset.innerText = "reset";
-        const handlerReset = (event: Event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          panzoom.reset({ animate: false });
-        };
-
-        reset.addEventListener('click', handlerReset);
-        resetHandlers.push({ button: reset, handler: handlerReset });
-
-        buttonContainer.appendChild(zoomIn);
-        buttonContainer.appendChild(zoomOut);
-        buttonContainer.appendChild(reset);
-        mermaidContainer.appendChild(buttonContainer);
-
-        // currentNode.insertBefore(buttonContainer, currentNode)
-        const preNode = currentNode.parentNode;
-        //     if (!preNode) return;
-        preNode?.insertBefore(mermaidContainer, currentNode);
-
-        // // console.log(`[onDomInit] new Node before replace`, preNode.be);
-        mermaidContainer.appendChild(currentNode);
-        // preNode.insertBefore(mermaidContainer, currentNode);
-        // mermaidContainer.appendChild(currentNode);
-
-
-        // mermaidContainer.appendChild(buttonContainer);
-
-
-        // currentNode.replaceChild(newNode, currentNode);
-        // currentNode.insertAdjacentElement('beforebegin', newNode);
-
-        ctx.logger.info(`onDomInit newNode  after replace index=${index}`, mermaidContainer);
-        // ctx.logger.info(`transformContent div Element`, divEl.innerHTML);
-        // }
+      // console.log(`onDomInit svg id=${svgId}`, svg);
+      if (!svg) return;
+      // Initialize Panzoom
+      const panzoom = Panzoom(svg as SVGElement, {
+        maxScale: 5,
+        minScale: 0.5,
+        step: 0.1,
       });
+
+      // codeNode: <code class="language-mermaid">...</code>
+      const codeNode = svg.parentNode;
+      const pre = codeNode?.parentElement;
+      if (!pre) return;
+      pre.className = "mermaid-container";
+      // console.log(`code parent`, pre);
+
+      const mermaidContainer = document.createElement('div');
+      mermaidContainer.className = "mermaid-container";
+      const buttonContainer = document.createElement('div');
+      buttonContainer.className = "mermaid-button-container";
+      // zoomin
+      const zoomIn = document.createElement('button');
+      zoomIn.className = "mermaid-zoomin-button";
+      zoomIn.innerText = "+";
+      const handlerIn = (event: Event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        panzoom.zoomIn({ animate: true });
+      };
+      zoomIn.addEventListener('click', handlerIn);
+      zoomInHandlers.push({ button: zoomIn, handler: handlerIn });
+      // zoomout
+      const zoomOut = document.createElement('button');
+      zoomOut.className = "mermaid-zoomout-button";
+      zoomOut.innerText = "-";
+      const handlerOut = (event: Event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        panzoom.zoomOut({ animate: true });
+      };
+      zoomOut.addEventListener('click', handlerOut);
+      zoomOutHandlers.push({ button: zoomOut, handler: handlerOut });
+      // rset
+      const reset = document.createElement('button');
+      reset.className = "mermaid-reset-button";
+      reset.innerText = "reset";
+      const handlerReset = (event: Event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        panzoom.reset({ animate: false });
+      };
+      reset.addEventListener('click', handlerReset);
+      resetHandlers.push({ button: reset, handler: handlerReset });
+
+      buttonContainer.appendChild(zoomIn);
+      buttonContainer.appendChild(zoomOut);
+      buttonContainer.appendChild(reset);
+
+      pre?.insertBefore(buttonContainer, codeNode);
 
     }
 
+
     await mermaid.run({
-      querySelector: '.language-mermaid',
+      nodes: mermaidNodes,
       postRenderCallback: postRenderCB,
     });
 

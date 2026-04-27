@@ -1,2 +1,6 @@
 // layout-engine.ts
-export class LayoutEngine {}
+export class LayoutEngine {
+  renderShell(html: string): string {
+    return html;
+  }
+}

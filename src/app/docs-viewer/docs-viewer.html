@@ -16,21 +16,10 @@
   </div>
 
   <div class="progress-bar">
-    <!-- <div class="progress-fill" [style.width.%]="100"></div> -->
     <div class="progress-fill" [style.width.%]="scrollService.scrollPercent()"></div>
   </div>
 
 </div>
-
-<!--
-<div class="viewer-wrapper" #viewWrapper>
-
-  <div class="viewer-overlay hidden"></div>
-  <app-ulde-viewer [hidden]="true" [$docId]="$docId()" ($contentResult)="onContentRendered($event)"></app-ulde-viewer>
-
-  <div class="docsViewer" #docsViewer></div>
-  <app-ulde-debug-overlay />
-</div> -->
 
 <div class="docsViewer" #docsViewer>
   <div class="viewer-wrapper" #viewWrapper>

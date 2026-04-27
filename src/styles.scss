@@ -237,6 +237,22 @@ body[data-theme="light"] {
    Marked
 --------------------------------------------------------- */
 
+[data-theme="light"] .backToIndex:hover,
+[data-theme="light"] .backToPrevious:hover {
+  // position: relative;
+  background-color: red !important;
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+[data-theme="dark"] .backToIndex:hover,
+[data-theme="dark"] .backToPrevious:hover {
+  // position: relative;
+  background-color: rgb(126, 238, 122);
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out;
+}
+
 .docsViewer table {
   border-collapse: collapse;
   width: fit-content; //100%;
@@ -289,53 +305,13 @@ body[data-theme="light"] {
 /* ---------------------------------------------------------
    Mermaid
 --------------------------------------------------------- */
-
-.docsViewer .mermaid-container .language-mermaid {
-  position: relative;
-  width: auto;
-  height: auto;
-  padding: 1rem;
-  margin: 0.5rem;
-  border: 0.5px dashed;// var(--text-color);
-
-  color: var(--text-color);
-  // background-color: rgb(227, 229, 233); // for debug use
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-
-}
-
-.docsViewer .mermaid-container .mermaid-button-container {
-  position: relative;
-
-  display: inline flow-root;
-  // border: 2px solid #55db50;
-  margin: 0.5rem;
-  width: auto;
-}
-
-.mermaid-button-container .mermaid-reset-button,
-.mermaid-button-container .mermaid-zoomin-button,
-.mermaid-button-container .mermaid-zoomout-button {
-
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  // z-index:90;
-}
-
-.docsViewer .langauge-mermaid g text {
-  // word-wrap: normal;
-  word-wrap: break-word;
-  // font-size: 10px;
-}
-
 /*
 Source - https://stackoverflow.com/a/79199554
 Posted by grappler
 Retrieved 2026-04-23, License - CC BY-SA 4.0
 */
 .docsViewer .mermaid-container {
+  display: block;
   width: auto;
   height: auto;
   overflow: hidden;
@@ -348,6 +324,63 @@ Retrieved 2026-04-23, License - CC BY-SA 4.0
   cursor: grab;
 }
 
+.docsViewer .mermaid-container .language-mermaid {
+  position: relative;
+  padding: 1rem;
+  margin: 0.5rem;
+  border: 0.5px dashed; // var(--text-color);
+  color: var(--text-color);
+  display: block;
+  // flex-direction: row;
+  justify-content: center;
+
+}
+
+.docsViewer .langauge-mermaid g text {
+  // word-wrap: normal;
+  word-wrap: break-word;
+  // font-size: 10px;
+}
+
+.docsViewer .mermaid-container .mermaid-button-container {
+  position: relative;
+  display: block;
+  align-items: flex-end;
+  margin: 0.5rem;
+
+  transition: background-color 0.3s ease;
+  // z-index: 1000;
+  /* Ensure it stays on top */
+}
+
+.mermaid-reset-button,
+.mermaid-zoomin-button,
+.mermaid-zoomout-button {
+  position: relative;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+
+}
+
+[data-theme="light"] .mermaid-reset-button:hover,
+[data-theme="light"] .mermaid-zoomin-button:hover,
+[data-theme="light"] .mermaid-zoomout-button:hover {
+  // position: relative;
+  background-color: red;
+  color: var(--text-color);
+  transform: scale(1.2);
+  transition: transform 0.2s ease-in-out;
+}
+
+[data-theme="dark"] .mermaid-reset-button:hover,
+[data-theme="dark"] .mermaid-zoomin-button:hover,
+[data-theme="dark"] .mermaid-zoomout-button:hover {
+  // position: relative;
+  background-color: rgb(126, 238, 122);
+  color: var(--text-color);
+  transform: scale(1.2);
+  transition: transform 0.2s ease-in-out;
+}
 
 /* ---------------------------------------------------------
    Debug Tools for docsViewer

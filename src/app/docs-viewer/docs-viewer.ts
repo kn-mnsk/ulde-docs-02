@@ -13,10 +13,14 @@ import { readSessionState, writeSessionState } from './session-state.manage';
 import { UldeDomHostService } from '../ulde/angular/ulde-dom-host.service';
 import { UldeContentResult } from '../ulde/core/runtime/ulde.types';
 import { UldeDebugOverlay } from '../ulde/angular/ulde-debug-overlay/ulde-debug-overlay';
+// import { UldeLayoutShell } from '../ulde/angular/ulde-layout-shell/ulde-layout-shell';
 
 @Component({
   selector: 'app-docs-viewer',
-  imports: [UldeViewer, MatIconModule, UldeDebugOverlay],
+  imports: [UldeViewer, MatIconModule,
+    // UldeDebugOverlay,
+    //  UldeLayoutShell
+    ],
   templateUrl: './docs-viewer.html',
   styleUrl: './docs-viewer.scss',
 })

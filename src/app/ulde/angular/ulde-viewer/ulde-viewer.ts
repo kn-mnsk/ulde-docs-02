@@ -9,13 +9,15 @@ import { UldeDebugOverlay } from '../ulde-debug-overlay/ulde-debug-overlay';
 import { readSessionState, writeSessionState } from '../../../docs-viewer/session-state.manage';
 import { ScrollService } from '../../../docs-viewer/scroll.service';
 import { UldeDomHostService } from '../ulde-dom-host.service';
+import { UldeLayoutShell } from '../ulde-layout-shell/ulde-layout-shell';
 
 
 @Component({
   selector: 'app-ulde-viewer',
   standalone: true,
   imports: [
-    UldeDebugOverlay
+    // UldeDebugOverlay,
+    UldeLayoutShell
   ],
   templateUrl: './ulde-viewer.html',
   styleUrls: ['./ulde-viewer.scss'],

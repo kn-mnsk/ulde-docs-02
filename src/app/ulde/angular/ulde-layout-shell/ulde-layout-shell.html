@@ -13,6 +13,23 @@
       <h1>ULDE Documentation</h1>
     </header>
 
-    <article class="doc-body" [innerHTML]="html()"></article>
+    @if ($loading()) {
+    <div class="ulde-viewer__loading">
+      Loading…
+    </div>
+    } @else {
+
+    @if ($error()) {
+    <div class="ulde-viewer__error">
+      {{ $error() }}
+    </div>
+    } @else {
+
+    @if ($contentResult()) {
+    <article class="doc-body" [innerHTML]="$html()"></article>
+    <app-ulde-debug-overlay />
+    }
+    }
+    }
   </main>
 </div>

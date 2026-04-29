@@ -17,17 +17,22 @@
         Doc</strong></button>
   </div>
 
-  <div class="progress-bar">
+  <!-- <div class="progress-bar">
     <div class="progress-fill" [style.width.%]="scrollService.scrollPercent()"></div>
-  </div>
+  </div> -->
 
 </div>
-
+<!--
 <div class="docsViewer" #docsViewer>
   <div class="viewer-wrapper" #viewWrapper>
     <div class="viewer-overlay hidden"></div>
     <app-ulde-viewer id="uldeViewer" class="uldeViewer" #uldeViewer [$docId]="$activeDocId()"
       ($isContentRendered)="onContentRendered($event)"></app-ulde-viewer>
-    <!-- <app-ulde-debug-overlay /> -->
+
   </div>
+</div> -->
+<div class="docsViewer" #docsViewer>
+  <app-ulde-viewer id="uldeViewer" class="uldeViewer" #uldeViewer [$inputDocId]="$activeDocId()"
+      ($isContentRendered)="onContentRendered($event)"></app-ulde-viewer>
+    <!-- <app-ulde-debug-overlay /> -->
 </div>

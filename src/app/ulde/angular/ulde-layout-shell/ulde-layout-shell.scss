@@ -1,10 +1,14 @@
 .layout {
   display: flex;
   height: 100vh;
-  // overflow: hidden;
+  overflow: hidden;
 }
 
+
+
+
 .sidebar {
+  height: 85vh;
   // background: #f4f4f4;
   border-right: 2px solid #ccc;
   min-width: 150px;
@@ -12,6 +16,8 @@
   width: 250px;
   /* initial width */
   position: relative;
+  overflow-y: auto;
+  // overflow-y: scroll;
 }
 
 /* The draggable handle */
@@ -24,12 +30,18 @@
   right: 0;
   bottom: 0;
 }
+
 .resizer:hover {
-  scale: 1.2;
+  // scale: 1.5;
+  width: 10px;
+  background: #3f51b5;
+  transition: width 0.1s ease-out;
 }
 
 .sidebar a {
   display: block;
+  padding: .2rem;
+  // display: block;
 
   // color: #ccc;
   // margin: 0.5rem 0;
@@ -42,13 +54,87 @@
 // }
 
 
-.content {
+/* ---------------------------------------------------------
+   PROGRESS BAR
+--------------------------------------------------------- */
+// .main {
+//     position: relative;
+// }
+
+.progress-bar {
+    height: 2vh;
+  position: relative;
+  // flex: 0;
+  width: auto;
+  height: 4px;
+  background: #eee;
+  margin-top: 15px;
+  // top: 15px;
+  // margin: 0;
+}
+
+.progress-fill {
+  height: 100%;
+  // margin: 0;
+  background: #3f51b5;
+  transition: width 0.1s ease-out;
+}
+
+
+/* ---------------------------------------------------------
+   VIEWER + SCROLL RESTORATION
+--------------------------------------------------------- */
+
+.doc-body-wrapper {
   position: relative;
   flex: 1;
-  // background: #fff;
-  padding: 2rem;
-  overflow: auto;
+  overflow: hidden;
+  z-index: 0; // new
 }
+
+.doc-body-overlay {
+  position: absolute;
+  inset: 0;
+  // background: var(--background-color);
+  background: var(--background-color, white);
+  z-index: 10;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 150ms ease-out;
+}
+
+.doc-body-overlay.hidden {
+  opacity: 0;
+}
+
+
+
+.doc-body {
+  position: relative;
+  width:auto;
+  height: 80vh;
+  flex: 0;
+  // background: #fff;
+  padding: 1rem;
+  overflow: auto;
+  &__loading {
+    opacity: 0.6;
+    font-style: italic;
+  }
+
+  &__error {
+    color: #d33;
+    font-weight: bold;
+  }
+
+  &__content {
+    line-height: 1.6;
+  }
+}
+
+// .main {
+//     overflow: auto;
+// }
 
 // .content {
 //   position: relative;
@@ -57,11 +143,28 @@
 //   padding: 2rem;
 // }
 
-.header {
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 1.5rem;
-}
+// .header {
+//   border-bottom: 1px solid #ddd;
+//   margin-bottom: 1.5rem;
+// }
+// .ulde-viewer {
+//   padding: 1.5rem;
 
-.doc-body {
-  line-height: 1.6;
-}
+//   &__loading {
+//     opacity: 0.6;
+//     font-style: italic;
+//   }
+
+//   &__error {
+//     color: #d33;
+//     font-weight: bold;
+//   }
+
+//   &__content {
+//     line-height: 1.6;
+//   }
+// }
+
+// .doc-body_content {
+//   line-height: 1.6;
+// }

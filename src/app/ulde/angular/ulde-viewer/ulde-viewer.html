@@ -1,5 +1,5 @@
 <!-- <p>app-ulde-viewer works</p> -->
-<app-ulde-layout-shell [$loading]="loading" [$error]="error" [$contentResult]="contentResult"  [$html]="sanitizedContent"></app-ulde-layout-shell>
+<app-ulde-layout-shell [$loading]="loading" [$error]="error" [$contentResult]="contentResult"  [$html]="sanitizedContent" [$inputDocId]="$inputDocId().docId" ($outputDocId)="linkDocId($event)"></app-ulde-layout-shell>
 <!-- <app-ulde-layout-shell [html]="html()"></app-ulde-layout-shell> -->
 <!--
 <div>

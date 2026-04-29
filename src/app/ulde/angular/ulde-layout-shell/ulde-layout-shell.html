@@ -1,36 +1,54 @@
 <!-- <p>ulde-layout-shell works!</p> -->
 <div class="layout">
-  <aside class="sidebar" id="sidebarBox" #sidebar>
-    <div class="resizer" id="sidebarResizer" #sidebarResizer></div>
-    <h2>Docs</h2>
-    <nav>
-      <a routerLink="/home">Home</a>
-      <a routerLink="/getting-started">Getting Started</a>
-    </nav>
-  </aside>
+  <div style="position: relative;">
+    <aside class="sidebar" id="sidebarBox" #sidebar>
+      <div class="resizer" id="sidebarResizer" #sidebarResizer></div>
+      <h2>Docs</h2>
+      <nav>
+        <a routerLink="/home">Home</a>
+        <a routerLink="/getting-started">Getting Started</a>
+      </nav>
+    </aside>
+  </div>
+  <div style="position: relative;">
+    <span>{{$inputDocId()}}</span>
+    <!-- <span>{{scrollService.scrollPercent()}}</span> -->
+    <!-- <div class="content"> -->
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="scrollService.scrollPercent()"></div>
+    </div>
 
-  <main class="content">
-    <header class="header">
+    <!-- <main class="main"> -->
+    <div class="doc-body-wrapper" #docBodyWrapper>
+      <div class="doc-body-overlay hidden"></div>
+      <main class="doc-body" id="doc-body">
+        <!-- <header class="header">
       <h1>ULDE Documentation</h1>
-    </header>
+    </header> -->
+        <!-- <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="scrollService.scrollPercent()"></div>
+    </div> -->
+        <!-- <div class="content"> -->
+        @if ($loading()) {
+        <div class="doc-body__loading">
+          Loading…
+        </div>
+        } @else {
 
-    @if ($loading()) {
-    <div class="ulde-viewer__loading">
-      Loading…
+        @if ($error()) {
+        <div class="doc-body__error">
+          {{ $error() }}
+        </div>
+        } @else {
+
+        @if ($contentResult()) {
+        <article class="doc-body_content" id="doc-body_content" #docbody [innerHTML]="$html()"></article>
+        <app-ulde-debug-overlay />
+        }
+        }
+        }
+        <!-- </div> -->
+      </main>
     </div>
-    } @else {
-
-    @if ($error()) {
-    <div class="ulde-viewer__error">
-      {{ $error() }}
-    </div>
-    } @else {
-
-    @if ($contentResult()) {
-    <article class="doc-body" [innerHTML]="$html()"></article>
-    <app-ulde-debug-overlay />
-    }
-    }
-    }
-  </main>
+  </div>
 </div>

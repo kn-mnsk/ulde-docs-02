@@ -50,8 +50,8 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   // debugScroll = true;
   // keep a reference to the handler
   private uldeLinkClickHandler = this.onUldeLinkClick.bind(this);
-  private uldeScrollHandler = this.onUldeScroll.bind(this);
-  private mermaidWheelHandler = this.onMermaidWheel.bind(this);
+  // private uldeScrollHandler = this.onUldeScroll.bind(this);
+  // private mermaidWheelHandler = this.onMermaidWheel.bind(this);
   // private scrollHandler = this.onScroll.bind(this);
 
   // private removeScrollListener?: () => void;
@@ -66,6 +66,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
   // @ViewChild('vieweWrapper', { static: true }) uldeViewer!: ElementRef<HTMLElement>;
   @ViewChild('docsViewer', { static: false }) docsViewer!: ElementRef<HTMLElement>;
+  // @ViewChild('uldeViewer', { static: false }) docsViewer!: ElementRef<HTMLElement>;
 
   constructor(
     protected scrollService: ScrollService,
@@ -152,8 +153,8 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   private cleanupDocsViewer(root: HTMLElement | null) {
     if (root) {
       root.removeEventListener('ulde-link-click', this.uldeLinkClickHandler);
-      root.removeEventListener('ulde-scroll', this.uldeScrollHandler);
-      root.removeEventListener('mermaid-wheel', this.mermaidWheelHandler);
+      // root.removeEventListener('ulde-scroll', this.uldeScrollHandler);
+      // root.removeEventListener('mermaid-wheel', this.mermaidWheelHandler);
       // viewer = null;
     }
 
@@ -277,13 +278,13 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
       this.cleanupDocsViewer(this.root);
 
-      this.domHost.attach(this.root, this.injector);
+      // this.domHost.attach(this.root, this.injector);
 
-      this.root.addEventListener('ulde-link-click', this.uldeLinkClickHandler);
-      this.root.addEventListener('ulde-scroll', this.uldeScrollHandler);
-      this.root.addEventListener('mermaid-wheel', this.mermaidWheelHandler);
+      // this.root.addEventListener('ulde-link-click', this.uldeLinkClickHandler);
+      // this.root.addEventListener('ulde-scroll', this.uldeScrollHandler);
+      // this.root.addEventListener('mermaid-wheel', this.mermaidWheelHandler);
 
-      this.restoreScroll(this.$docId(), this.root);
+      // this.restoreScroll(this.$docId(), this.root);
     });
   }
 
@@ -378,50 +379,50 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   // }
 
 
-  private restoreScroll(docId: string, viewer: HTMLElement): void {
+  // private restoreScroll(docId: string, viewer: HTMLElement): void {
 
-    const savedPos = this.scrollService.getPosition(docId);
+  //   const savedPos = this.scrollService.getPosition(docId);
 
-    const overlay = viewer.parentElement!.querySelector('.viewer-overlay') as HTMLElement;
-    if (!overlay) {
-      console.warn('Overlay not found — scroll hiding disabled.');
-      viewer.scrollTop = savedPos;
-      return;
-    }
+  //   const overlay = viewer.parentElement!.querySelector('.viewer-overlay') as HTMLElement;
+  //   if (!overlay) {
+  //     console.warn('Overlay not found — scroll hiding disabled.');
+  //     viewer.scrollTop = savedPos;
+  //     return;
+  //   }
 
-    if (this.debugScroll) {
-      this.timeline.clear();
-      this.mark("start");
-      overlay.style.background = 'rgba(255,0,0,0.4)';
-      console.log('[DEBUG] Scroll restore start → pos:', savedPos);
-    }
+  //   if (this.debugScroll) {
+  //     this.timeline.clear();
+  //     this.mark("start");
+  //     overlay.style.background = 'rgba(255,0,0,0.4)';
+  //     console.log('[DEBUG] Scroll restore start → pos:', savedPos);
+  //   }
 
-    overlay.classList.remove('hidden'); // show overlay immediately
+  //   overlay.classList.remove('hidden'); // show overlay immediately
 
-    viewer.scrollTop = savedPos;
+  //   viewer.scrollTop = savedPos;
 
-    requestAnimationFrame(() => {
-      if (this.debugScroll) this.mark("after-first-raf");
+  //   requestAnimationFrame(() => {
+  //     if (this.debugScroll) this.mark("after-first-raf");
 
-      requestAnimationFrame(() => {
-        overlay.classList.add('hidden'); // always hide overlay
+  //     requestAnimationFrame(() => {
+  //       overlay.classList.add('hidden'); // always hide overlay
 
-        if (this.debugScroll) {
-          this.mark("overlay-hidden");
-          console.log('[DEBUG] Scroll restore complete');
+  //       if (this.debugScroll) {
+  //         this.mark("overlay-hidden");
+  //         console.log('[DEBUG] Scroll restore complete');
 
-          const max = viewer.scrollHeight - viewer.clientHeight;
-          const percent = max > 0 ? (savedPos / max) * 100 : 0;
+  //         const max = viewer.scrollHeight - viewer.clientHeight;
+  //         const percent = max > 0 ? (savedPos / max) * 100 : 0;
 
-          this.showScrollDebugOverlay({
-            restored: savedPos,
-            max,
-            percent,
-          });
-        }
-      });
-    });
-  }
+  //         this.showScrollDebugOverlay({
+  //           restored: savedPos,
+  //           max,
+  //           percent,
+  //         });
+  //       }
+  //     });
+  //   });
+  // }
 
 
   protected toggleTheme(event: Event): void {

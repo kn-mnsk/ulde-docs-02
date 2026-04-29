@@ -29,13 +29,13 @@ export class UldeViewer implements AfterViewInit, OnDestroy {
 
   private $isBrowser = signal<boolean>(false);
 
-  $docId = input.required<{ docId: string, reloadCounter: number }>();
-
-  // private $reload = signal(0);
-  // $activeDocId = computed<{ docId: string, reloadCounter: number }>(() => ({
-  //   docId: this.$docId(),
-  //   reloadCounter: this.$reload()
-  // }));
+  $inputDocId = input.required<{ docId: string, reloadCounter: number }>();
+  $destId = signal<string | null>(null);
+  private $reload = signal(0);
+  $activeDocId = computed<{ destId: string | null, reloadCounter: number }>(() => ({
+    destId: this.$destId(),
+    reloadCounter: this.$reload()
+  }));
   // contentRendered = output<HTMLElement>();
 
   private sanitizer = inject(DomSanitizer);
@@ -64,8 +64,12 @@ export class UldeViewer implements AfterViewInit, OnDestroy {
     this.$isBrowser.set(isBrowser);
 
     effect(() => {
-      const docId = this.$docId().docId;
-      this.effectWrapper(docId);
+      const docId = this.$inputDocId().docId;
+      const destId = this.$activeDocId().destId
+      if (destId) {
+        this.effectWrapper(destId);
+      } else
+        this.effectWrapper(docId);
     });
 
   }
@@ -156,6 +160,10 @@ export class UldeViewer implements AfterViewInit, OnDestroy {
     } finally {
       this.loading = false;
     }
+  }
+
+  linkDocId(destId: string) {
+    this.$destId.set(destId);
   }
 
 }

@@ -58,14 +58,14 @@ export class UldeService {
   private async registerBuiltInPlugins() {
     await this.registerPlugin(MarkdownPlugin);
     await this.registerPlugin(HeadingAnchorsPlugin);
-    // await this.registerPlugin(KaTeXPlugin);
+    
     // DOM plugins must be registered in the DOM host:
     this.domHost.registerDomPlugin(ThemeDomPlugin);
     this.domHost.registerDomPlugin(ResolveLinksDomPlugin);
     this.domHost.registerDomPlugin(ScrollEventDomPlugin);
     this.domHost.registerDomPlugin(KatexDomPlugin);
-
     this.domHost.registerDomPlugin(MermaidDomPlugin);
+
   }
 
   async registerPlugin(plugin: UldePlugin) {

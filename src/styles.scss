@@ -20,7 +20,7 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  // overflow: hidden; // ensure only the docsViewer scrolls
+  // overflow: hidden; // ensure only the docs-viewer_content scrolls
   transition: background-color 0.7s ease-in-out, color 0.7s ease-in-out;
 }
 
@@ -253,7 +253,53 @@ body[data-theme="light"] {
   transition: transform 0.2s ease-in-out;
 }
 
-.docsViewer table {
+// .docs-viewer_content table {
+//   border-collapse: collapse;
+//   width: fit-content; //100%;
+//   margin-top: 1rem;
+//   margin-bottom: 1rem;
+//   // padding: 5px;
+//   font-size: 1rem;
+//   border-radius: 3em;
+// }
+
+// .docs-viewer_content table th {
+//   // background-color: rgb(206, 14, 78);
+//   background-color: var(--table-header-bg);
+// }
+
+// .docs-viewer_content table th,
+// .docs-viewer_content table td {
+//   // border: 1rem solid var(--table-border);
+//   // border: 1px solid var(--table-border);
+//   border: 2px solid #1bee22;
+//   padding: 0.3rem;
+//   vertical-align: top;
+// }
+
+
+// .docs-viewer_content table tr:nth-child(even) {
+//   // background-color: yellow;
+//   // background-color: #05252e;
+//   border-bottom: solid 1px rgb(227, 219, 219);
+// }
+
+// .docs-viewer_content table tr:nth-child(odd) {
+//   // background-color: green;
+//   // background-color: #ce164a;
+//   border-bottom: solid 1px rgb(227, 219, 219);
+// }
+
+
+// // temporary class: scroll by onClick function
+// .docs-viewer_content .inline-highlight {
+//   background-color: rgb(219, 219, 22);
+//   transition: background-color 0.7s ease-in-out, color 0.7s ease-in-out;
+//   // transition: background-color 1.5s ease;
+// }
+
+
+.ulde-layout-main_content table {
   border-collapse: collapse;
   width: fit-content; //100%;
   margin-top: 1rem;
@@ -263,13 +309,13 @@ body[data-theme="light"] {
   border-radius: 3em;
 }
 
-.docsViewer table th {
+.ulde-layout-main_content table th {
   // background-color: rgb(206, 14, 78);
   background-color: var(--table-header-bg);
 }
 
-.docsViewer table th,
-.docsViewer table td {
+.ulde-layout-main_content table th,
+.ulde-layout-main_content table td {
   // border: 1rem solid var(--table-border);
   // border: 1px solid var(--table-border);
   border: 2px solid #1bee22;
@@ -278,13 +324,13 @@ body[data-theme="light"] {
 }
 
 
-.docsViewer table tr:nth-child(even) {
+.ulde-layout-main_content table tr:nth-child(even) {
   // background-color: yellow;
   // background-color: #05252e;
   border-bottom: solid 1px rgb(227, 219, 219);
 }
 
-.docsViewer table tr:nth-child(odd) {
+.ulde-layout-main_content table tr:nth-child(odd) {
   // background-color: green;
   // background-color: #ce164a;
   border-bottom: solid 1px rgb(227, 219, 219);
@@ -292,11 +338,13 @@ body[data-theme="light"] {
 
 
 // temporary class: scroll by onClick function
-.docsViewer .inline-highlight {
+.ulde-layout-main_content .inline-highlight {
   background-color: rgb(219, 219, 22);
   transition: background-color 0.7s ease-in-out, color 0.7s ease-in-out;
   // transition: background-color 1.5s ease;
 }
+
+
 
 
 // @import './app/docs-viewer/docs-viewer.scss';
@@ -310,7 +358,7 @@ Source - https://stackoverflow.com/a/79199554
 Posted by grappler
 Retrieved 2026-04-23, License - CC BY-SA 4.0
 */
-.docsViewer .mermaid-container {
+.docs-viewer_content .mermaid-container {
   display: block;
   width: auto;
   height: auto;
@@ -320,11 +368,11 @@ Retrieved 2026-04-23, License - CC BY-SA 4.0
   margin-bottom: 10px;
 }
 
-.docsViewer .mermaid-container svg {
+.docs-viewer_content .mermaid-container svg {
   cursor: grab;
 }
 
-.docsViewer .mermaid-container .language-mermaid {
+.docs-viewer_content .mermaid-container .language-mermaid {
   position: relative;
   padding: 1rem;
   margin: 0.5rem;
@@ -336,13 +384,13 @@ Retrieved 2026-04-23, License - CC BY-SA 4.0
 
 }
 
-.docsViewer .langauge-mermaid g text {
+.docs-viewer_content .langauge-mermaid g text {
   // word-wrap: normal;
   word-wrap: break-word;
   // font-size: 10px;
 }
 
-.docsViewer .mermaid-container .mermaid-button-container {
+.docs-viewer_content .mermaid-container .mermaid-button-container {
   position: relative;
   display: block;
   align-items: flex-end;
@@ -383,7 +431,7 @@ Retrieved 2026-04-23, License - CC BY-SA 4.0
 }
 
 /* ---------------------------------------------------------
-   Debug Tools for docsViewer
+   Debug Tools for docs-viewer_content
 --------------------------------------------------------- */
 :root .dv-scroll-debug-overlay {
   // html .dv-scroll-debug-overlay {

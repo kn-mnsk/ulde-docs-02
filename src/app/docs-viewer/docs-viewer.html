@@ -1,38 +1,26 @@
 <!-- <p>docs-viewer works!</p> -->
-<!-- <app-ulde-layout-shell [html]="html()"></app-ulde-layout-shell> -->
 
+<div class="docs-viewer">
+  <div class="docs-viewer_header">
+    <div class="docs-viewer_theme">
+      <button class="mat-button themaTogglebutton" type="button" (click)="toggleTheme($event)">
+        <mat-icon class="mat-icon">{{ $isDarkMode() ? 'toggle_off' : 'toggle_on'}}</mat-icon>
+        <span class="themeTitle">Theme Color:&nbsp;{{$isDarkMode() ? 'Dark' : 'Light' }}</span>
+      </button>
+    </div>
 
-<div class="topContainer">
-  <div class=" themeContainer">
-    <button class="mat-button themaTogglebutton" type="button" (click)="toggleTheme($event)">
-      <mat-icon class="mat-icon">{{ $isDarkMode() ? 'toggle_off' : 'toggle_on'}}</mat-icon>
-      <span class="themeTitle">Theme Color:&nbsp;{{$isDarkMode() ? 'Dark' : 'Light' }}</span>
-    </button>
-  </div>
-
-  <div>
-    <span class="docId">ID:{{this.$activeDocId().docId}} &nbsp; ─ &nbsp; {{docTitle}}</span>
-    <button class="backToIndex" type="button" (click)="backToIndex($event)"><strong>Back To Index</strong></button>
-    <button class="backToPrevious" type="button" (click)="backToPrevious($event)"><strong>Shortcut To Previous
-        Doc</strong></button>
-  </div>
-
-  <!-- <div class="progress-bar">
-    <div class="progress-fill" [style.width.%]="scrollService.scrollPercent()"></div>
-  </div> -->
-
-</div>
-<!--
-<div class="docsViewer" #docsViewer>
-  <div class="viewer-wrapper" #viewWrapper>
-    <div class="viewer-overlay hidden"></div>
-    <app-ulde-viewer id="uldeViewer" class="uldeViewer" #uldeViewer [$docId]="$activeDocId()"
-      ($isContentRendered)="onContentRendered($event)"></app-ulde-viewer>
+    <div>
+      <span class="docId">ID:{{this.$activeDocId().docId}} &nbsp; ─ &nbsp; {{docTitle}}</span>
+      <button class="backToIndex" type="button" (click)="backToIndex($event)"><strong>Back To Index</strong></button>
+      <button class="backToPrevious" type="button" (click)="backToPrevious($event)"><strong>Shortcut To Previous
+          Doc</strong></button>
+    </div>
 
   </div>
-</div> -->
-<div class="docsViewer" #docsViewer>
-  <app-ulde-viewer id="uldeViewer" class="uldeViewer" #uldeViewer [$inputDocId]="$activeDocId()"
+
+  <div class="docs-viewer_content" #docsViewerContent>
+    <app-ulde-viewer id="uldeViewer" class="uldeViewer" #uldeViewer [$inputDocId]="$activeDocId()"
       ($isContentRendered)="onContentRendered($event)"></app-ulde-viewer>
     <!-- <app-ulde-debug-overlay /> -->
+  </div>
 </div>

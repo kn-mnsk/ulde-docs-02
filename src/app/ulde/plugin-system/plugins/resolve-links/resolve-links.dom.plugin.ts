@@ -42,36 +42,46 @@ export const ResolveLinksDomPlugin: UldeDomPlugin = {
 
     const root = ctx.rootElement;
     if (!root) return;
-    const links = root.querySelectorAll<HTMLAnchorElement>('a[href]');
-    // console.log(`[ULDE] [resolve-links.dom.plugin] onDomInit root=`, root, `links=`, links);
 
-    links.forEach(link => {
-      const initialHref = link.getAttribute('href');
-      if (!initialHref || !initialHref.startsWith('#')) return;
+    requestAnimationFrame(() => {
 
-      const handler = (event: Event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        // This is fine only if the link never changes.
-        // But ULDE DOM plugins may mutate attributes later.
-        // here get again to prevent mutation
-        const raw = link.getAttribute('href');
-        if (!raw) return;
+      requestAnimationFrame(() => {
 
-        const [linkId, destId] = raw.split(':');
-        // linkId = '#docId' or '#inlineId'
-        // destId = 'guide/setup' or '2-key-features'
-        ctx.logger.info(`onDomINit linkId=${linkId} destId=${destId}`);
-        root.dispatchEvent(new CustomEvent('ulde-link-click', {
-          bubbles: true,
-          detail: { linkId, destId }
-        }));
-      };
 
-      // link.addEventListener('ulde-link-click', clickHandler);
-      link.addEventListener('click', handler);
-      handlers.push({ link, handler });
+        const links = root.querySelectorAll<HTMLAnchorElement>('a[href]');
+        console.log(`[ULDE] [resolve-links.dom.plugin] onDomInit links=`, links);
 
+        links.forEach(link => {
+          const initialHref = link.getAttribute('href');
+          if (!initialHref || !initialHref.startsWith('#')) return;
+
+          const handler = (event: Event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            // This is fine only if the link never changes.
+            // But ULDE DOM plugins may mutate attributes later.
+            // here get again to prevent mutation
+            const raw = link.getAttribute('href');
+            if (!raw) return;
+
+            const [linkId, destId] = raw.split(':');
+            // linkId = '#docId' or '#inlineId'
+            // destId = 'guide/setup' or '2-key-features'
+            ctx.logger.info(`onDomINit linkId=${linkId} destId=${destId}`);
+            root.dispatchEvent(new CustomEvent('ulde-link-click', {
+              bubbles: true,
+              detail: { linkId, destId }
+            }));
+          };
+
+          // link.addEventListener('ulde-link-click', clickHandler);
+          link.addEventListener('click', handler);
+          handlers.push({ link, handler });
+
+          console.log(`[ULDE] [resolve-links.dom.plugin] onDomInit link=`, link);
+        });
+
+      });
     });
   },
 

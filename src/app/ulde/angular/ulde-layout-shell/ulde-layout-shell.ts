@@ -23,7 +23,7 @@ export class UldeLayoutShell implements AfterViewInit, OnDestroy {
   $loading = input<boolean>(false);
   $error = input<boolean | null>(null);
   // $contentResult = input.required<UldeContentResult>();
-  $contentResult = input<UldeContentResult | null>(null);
+  // $contentResult = input<UldeContentResult | null>(null);
   $html = input.required<SafeHtml | string>();
   $inputDocId = input.required<string>();
   $outputDocId = output<string>();
@@ -43,17 +43,12 @@ export class UldeLayoutShell implements AfterViewInit, OnDestroy {
 
   private isResizing!: boolean;
 
-
   private readonly injector = inject(Injector);
   private readonly domHost = inject(UldeDomHostService);
 
-
-  // const sidebar = document.getElementById("sidebarBox");
-  @ViewChild('sidebar', { static: false }) sidebar!: ElementRef<HTMLElement>;
-  // const resizer = document.getElementById("sidebarResizer");
-  @ViewChild('sidebarResizer', { static: false }) resizer!: ElementRef<HTMLElement>;
-  // @ViewChild('docbody', { static: false }) docbody!: ElementRef<HTMLElement>;
-  private docBody: HTMLElement | null = null;
+  @ViewChild('uldeLayoutSidebar', { static: false }) uldeLayoutSidebar!: ElementRef<HTMLElement>;
+  @ViewChild('uldeLayoutSidebarResizer', { static: false }) uldeLayoutSidebarResizer!: ElementRef<HTMLElement>;
+  @ViewChild('uldeLayoutMain', { static: false }) uldeLayoutMain!: ElementRef<HTMLElement>;
 
   constructor(
     public readonly scrollService: ScrollService,
@@ -65,61 +60,50 @@ export class UldeLayoutShell implements AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit(): void {
-    console.log(`Log: [UldeLayoutShell] ngAfterViewInit this.docbody`, this.docBody);
     if (!this.$isBrowser()) return;
-    if (!this.sidebar || !this.resizer) return;
-    console.log(`Log: [UldeLayoutShell] ngAfterViewInit this.docbody`, this.docBody);
+    if (!this.uldeLayoutSidebar || !this.uldeLayoutSidebarResizer) return;
+    const uldeLayoutMain = this.uldeLayoutMain.nativeElement;
+    console.log(`Log: [UldeLayoutShell] ngAfterViewInit uldelayoutmain`, uldeLayoutMain);
+    if (!uldeLayoutMain) return;
 
-    // this.eventRegister();
-    // requestAnimationFrame(() => {
-      this.docBody = document.getElementById('doc-body');
-      console.log(`Log: [UldeLayoutShell] ngAfterViewInit this.docbody`, this.docBody);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.domHost.attach(uldeLayoutMain, this.injector);
+        this.eventsRegister();
+        this.restoreScroll(this.$inputDocId(), uldeLayoutMain);
 
-      if (!this.docBody) return;
-      console.log(`Log: [UldeLayoutShell] ngAfterViewInit this.docbody`, this.docBody);
-      this.domHost.attach(this.docBody, this.injector);
-      this.eventsRegister();
-
-      this.restoreScroll(this.$inputDocId(), this.docBody);
-    // });
-
+      });
+    });
   }
 
   ngOnDestroy(): void {
-    this.resizer.nativeElement.removeEventListener("mousedown", this.mouseDownHandler);
-    this.sidebar.nativeElement.removeEventListener("mousemove", this.mouseMoveHandler);
-    this.sidebar.nativeElement.removeEventListener("mouseup", this.mouseUpHandler);
-    this.docBody?.removeEventListener('ulde-link-click', this.uldeLinkClickHandler);
+    this.uldeLayoutSidebarResizer.nativeElement.removeEventListener("mousedown", this.mouseDownHandler);
+    this.uldeLayoutSidebar.nativeElement.removeEventListener("mousemove", this.mouseMoveHandler);
+    this.uldeLayoutSidebar.nativeElement.removeEventListener("mouseup", this.mouseUpHandler);
+    this.uldeLayoutMain?.nativeElement.removeEventListener('ulde-link-click', this.uldeLinkClickHandler);
 
-    this.docBody?.removeEventListener('ulde-scroll', this.uldeScrollHandler);
+    this.uldeLayoutMain?.nativeElement.removeEventListener('ulde-scroll', this.uldeScrollHandler);
 
   }
 
   private eventsRegister() {
 
-    // const sidebar = document.getElementById("sidebarBox");
-    // const resizer = document.getElementById("sidebarResizer");
-    // if (!this.sidebar || !this.resizer) return;
-    // const docBody = document.getElementById('content');
-
     this.isResizing = false;
 
-    this.resizer.nativeElement.addEventListener("mousedown", this.mouseDownHandler);
-    this.sidebar.nativeElement.addEventListener("mousemove", this.mouseMoveHandler);
-    this.sidebar.nativeElement.addEventListener("mouseup", this.mouseUpHandler);
+    this.uldeLayoutSidebarResizer.nativeElement.addEventListener("mousedown", this.mouseDownHandler);
+    this.uldeLayoutSidebar.nativeElement.addEventListener("mousemove", this.mouseMoveHandler);
+    this.uldeLayoutSidebar.nativeElement.addEventListener("mouseup", this.mouseUpHandler);
 
-
-    this.docBody?.addEventListener('ulde-link-click', this.uldeLinkClickHandler);
-    this.docBody?.addEventListener('ulde-scroll', this.uldeScrollHandler);
-    // this.docbody.nativeElement.addEventListener('ulde-scroll', this.uldeScrollHandler);
+    this.uldeLayoutMain?.nativeElement.addEventListener('ulde-link-click', this.uldeLinkClickHandler);
+    this.uldeLayoutMain?.nativeElement.addEventListener('ulde-scroll', this.uldeScrollHandler);
 
   }
 
   private onMouseDown(e: MouseEvent) {
     this.isResizing = true;
-    this.sidebar.nativeElement.style.cursor = "e-resize";
-    this.resizer.nativeElement.style.width = "10px";
-    this.resizer.nativeElement.style.background = "#3f51b5";
+    this.uldeLayoutSidebar.nativeElement.style.cursor = "e-resize";
+    this.uldeLayoutSidebarResizer.nativeElement.style.width = "10px";
+    this.uldeLayoutSidebarResizer.nativeElement.style.background = "#4a87f8";
     e.preventDefault();
 
   }
@@ -127,29 +111,26 @@ export class UldeLayoutShell implements AfterViewInit, OnDestroy {
   private onMouseMove(e: MouseEvent) {
     if (!this.isResizing) return;
 
-
-    this.resizer.nativeElement.style.width = "10px";
-    this.resizer.nativeElement.style.background = "#3f51b5";
+    this.uldeLayoutSidebarResizer.nativeElement.style.width = "10px";
+    this.uldeLayoutSidebarResizer.nativeElement.style.background = " #4a87f8";
     const newWidth = e.clientX;
     if (newWidth > 150 && newWidth < 500) { // min/max width
-      this.sidebar.nativeElement.style.width = newWidth + "px";
+      this.uldeLayoutSidebar.nativeElement.style.width = newWidth + "px";
     }
   }
 
   private onMouseUp(e: MouseEvent) {
-
     if (this.isResizing) {
       this.isResizing = false;
-      this.sidebar.nativeElement.style.cursor = "";
-      this.resizer.nativeElement.style.background = "transparent";
-      this.resizer.nativeElement.style.width = "10px";
+      this.uldeLayoutSidebar.nativeElement.style.cursor = "";
+      this.uldeLayoutSidebarResizer.nativeElement.style.background = "transparent";
+      this.uldeLayoutSidebarResizer.nativeElement.style.width = "10px";
 
     }
   }
 
-
   private onUldeScroll(event: any): void {
-    console.log(`Log: [UldeLayoutShell] onUldeScroll`, event);
+    console.log(`Log: [UldeLayoutShell] onUldeScroll`);
     if (event.type === 'ulde-scroll') {
       const { pos, height } = event.detail;
 
@@ -177,14 +158,12 @@ export class UldeLayoutShell implements AfterViewInit, OnDestroy {
 
 
   private onUldeLinkClick(e: any) {
-    console.log(`Log: Onclick`, e);
+    console.log(`Log: [UldeLayoutShell] Onclick`, e);
     if (e.type === 'ulde-link-click') {
       const { linkId, destId } = e.detail;
-      // this.handleInternalNavigation(linkId, destId);
+      this.handleInternalNavigation(linkId, destId);
     }
   }
-
-
 
 
   private handleInternalNavigation(linkId: string, destId: string) {
@@ -194,6 +173,7 @@ export class UldeLayoutShell implements AfterViewInit, OnDestroy {
         // this.$docId.set(destId);
         // this.$reload.update(n => n + 1);;
       }
+      this.$outputDocId.emit(destId);
       return;
     }
 
@@ -230,7 +210,7 @@ export class UldeLayoutShell implements AfterViewInit, OnDestroy {
 
     const savedPos = this.scrollService.getPosition(docId);
 
-    const overlay = viewer.parentElement!.querySelector('.doc-body-overlay') as HTMLElement;
+    const overlay = viewer.parentElement!.querySelector('.ulde-layout-main_overlay') as HTMLElement;
     if (!overlay) {
       console.warn('Overlay not found — scroll hiding disabled.');
       viewer.scrollTop = savedPos;

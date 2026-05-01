@@ -49,7 +49,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   debugScroll = false;
   // debugScroll = true;
   // keep a reference to the handler
-  private uldeLinkClickHandler = this.onUldeLinkClick.bind(this);
+  // private uldeLinkClickHandler = this.onUldeLinkClick.bind(this);
   // private uldeScrollHandler = this.onUldeScroll.bind(this);
   // private mermaidWheelHandler = this.onMermaidWheel.bind(this);
   // private scrollHandler = this.onScroll.bind(this);
@@ -65,8 +65,8 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   private root: HTMLElement | null = null;
 
   // @ViewChild('vieweWrapper', { static: true }) uldeViewer!: ElementRef<HTMLElement>;
-  @ViewChild('docsViewer', { static: false }) docsViewer!: ElementRef<HTMLElement>;
-  // @ViewChild('uldeViewer', { static: false }) docsViewer!: ElementRef<HTMLElement>;
+  @ViewChild('docsViewerContent', { static: false }) docsViewerContent!: ElementRef<HTMLElement>;
+  // @ViewChild('uldeViewer', { static: false }) docsViewerContent!: ElementRef<HTMLElement>;
 
   constructor(
     protected scrollService: ScrollService,
@@ -152,7 +152,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
 
   private cleanupDocsViewer(root: HTMLElement | null) {
     if (root) {
-      root.removeEventListener('ulde-link-click', this.uldeLinkClickHandler);
+      // root.removeEventListener('ulde-link-click', this.uldeLinkClickHandler);
       // root.removeEventListener('ulde-scroll', this.uldeScrollHandler);
       // root.removeEventListener('mermaid-wheel', this.mermaidWheelHandler);
       // viewer = null;
@@ -178,14 +178,14 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
   // Browser-only initialization
   // -------------------------
 
-  private initTheme(): void {
+  // private initTheme(): void {
 
-    const { docTheme } = readSessionState(this.$isBrowser()) as SessionState;
-    document.documentElement.setAttribute('data-theme', docTheme);
+  //   const { docTheme } = readSessionState(this.$isBrowser()) as SessionState;
+  //   document.documentElement.setAttribute('data-theme', docTheme);
 
-    // const savedTheme = localStorage.getItem('theme') || 'light';
-    // document.documentElement.setAttribute('data-theme', savedTheme);
-  }
+  //   // const savedTheme = localStorage.getItem('theme') || 'light';
+  //   // document.documentElement.setAttribute('data-theme', savedTheme);
+  // }
 
   private initGlobalListeners(): void {
     // this.removeScrollListener = this.renderer.listen(
@@ -235,6 +235,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
     if (state.component === 'DocsViewer') {
       // Refreshed while viewing DocsViewer: restore doc + scroll
       const docId = state.docId ?? 'initialdoc';
+      // const docId = state.docId ?? 'initialdoc';
       const scrollPos = state.scrollPos ?? 0;
 
       writeSessionState({ refreshed: false }, this.$isBrowser());
@@ -269,7 +270,7 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
     this.docTitle = result.docId;
     requestAnimationFrame(() => {
 
-      this.root = this.docsViewer?.nativeElement;
+      this.root = this.docsViewerContent?.nativeElement;
 
       if (!this.root) {
         console.warn(`Warn: ${this.$title()} wireInternalLinks() \nroot=`, this.root);
@@ -288,85 +289,86 @@ export class DocsViewer implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private onMermaidWheel(event: any): void {
-    if (event.type === 'mermaid-wheel') {
-      console.log(`Log: [DocsViewer] onUldeWhell`, event);
+  // private onMermaidWheel(event: any): void {
+  //   if (event.type === 'mermaid-wheel') {
+  //     console.log(`Log: [DocsViewer] onUldeWhell`, event);
 
-    }
+  //   }
 
-  }
+  // }
 
 
-  private onUldeScroll(event: any): void {
-    // console.log(`Log: [DocsViewer] onUldeScroll`, event);
-    if (event.type === 'ulde-scroll') {
-      const { pos, height } = event.detail;
+  // private onUldeScroll(event: any): void {
+  //   // console.log(`Log: [DocsViewer] onUldeScroll`, event);
+  //   if (event.type === 'ulde-scroll') {
+  //     const { pos, height } = event.detail;
 
-      const docId = this.$activeDocId().docId ?? '';
+  //     const docId = this.$activeDocId().docId ?? '';
 
-      if (!this.rafPending) {
-        this.rafPending = true;
-        // this.handleInternalNavigation(linkId, destId);
-      }
+  //     if (!this.rafPending) {
+  //       this.rafPending = true;
+  //       // this.handleInternalNavigation(linkId, destId);
+  //     }
 
-      requestAnimationFrame(() => {
-        this.scrollService.setPosition(docId, pos, height);
-        writeSessionState({ scrollPos: pos }, this.$isBrowser());
+  //     requestAnimationFrame(() => {
+  //       this.scrollService.setPosition(docId, pos, height);
+  //       writeSessionState({ scrollPos: pos }, this.$isBrowser());
 
-        if (this.debugScroll) {
-          console.log('[DEBUG] ulde-scroll event → pos:', pos);
-        }
+  //       if (this.debugScroll) {
+  //         console.log('[DEBUG] ulde-scroll event → pos:', pos);
+  //       }
 
-        this.rafPending = false;
-      });
-    }
+  //       this.rafPending = false;
+  //     });
+  //   }
 
-  }
+  // }
 
-  private onUldeLinkClick(e: any) {
-    console.log(`Log: Onclick`, e);
-    if (e.type === 'ulde-link-click') {
-      const { linkId, destId } = e.detail;
-      this.handleInternalNavigation(linkId, destId);
-    }
-  }
 
-  private handleInternalNavigation(linkId: string, destId: string) {
-    if (linkId === '#docId') {
-      if (destId && destId !== this.$docId()) {
-        this.$docId.set(destId);
-        this.$reload.update(n => n + 1);;
-      }
-      return;
-    }
+  // private onUldeLinkClick(e: any) {
+  //   console.log(`Log: Onclick`, e);
+  //   if (e.type === 'ulde-link-click') {
+  //     const { linkId, destId } = e.detail;
+  //     this.handleInternalNavigation(linkId, destId);
+  //   }
+  // }
 
-    if (linkId === '#inlineId') {
-      this.scrollToInline(destId);
+  // private handleInternalNavigation(linkId: string, destId: string) {
+  //   if (linkId === '#docId') {
+  //     if (destId && destId !== this.$docId()) {
+  //       this.$docId.set(destId);
+  //       this.$reload.update(n => n + 1);;
+  //     }
+  //     return;
+  //   }
 
-      return;
-    }
-  }
+  //   if (linkId === '#inlineId') {
+  //     this.scrollToInline(destId);
 
-  private scrollToInline(inlineId: string) {
-    // Wait for ULDE to finish rendering (contentRendered event)
-    // requestAnimationFrame(() => {
-    // console.log(`Log: scrollToInline this.root=`, this.root);
+  //     return;
+  //   }
+  // }
 
-    const el = document.getElementById(inlineId);
-    if (!el) return;
+  // private scrollToInline(inlineId: string) {
+  //   // Wait for ULDE to finish rendering (contentRendered event)
+  //   // requestAnimationFrame(() => {
+  //   // console.log(`Log: scrollToInline this.root=`, this.root);
 
-    el.scrollIntoView({ behavior: 'instant', block: 'start' });
-    requestAnimationFrame(() => {
-      el.classList.add('inline-highlight');  // whwn backward scrolling, no hihglight??
-      setTimeout(() => el.classList.remove('inline-highlight'), 1000); // short delay time time may not hightlight
+  //   const el = document.getElementById(inlineId);
+  //   if (!el) return;
 
-      // // Optional: make editable
-      if (!el.hasAttribute('contenteditable')) {
-        el.setAttribute('contenteditable', 'true');
-      }
-    });
+  //   el.scrollIntoView({ behavior: 'instant', block: 'start' });
+  //   requestAnimationFrame(() => {
+  //     el.classList.add('inline-highlight');  // whwn backward scrolling, no hihglight??
+  //     setTimeout(() => el.classList.remove('inline-highlight'), 1000); // short delay time time may not hightlight
 
-  }
+  //     // // Optional: make editable
+  //     if (!el.hasAttribute('contenteditable')) {
+  //       el.setAttribute('contenteditable', 'true');
+  //     }
+  //   });
+
+  // }
 
 
   // private updateSessionState(docId: string): void {

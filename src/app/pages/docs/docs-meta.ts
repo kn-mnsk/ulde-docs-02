@@ -64,10 +64,10 @@ export interface DocMeta {
 export const DocsList: DocMeta[] = [
   // test docs - begin
   {
-    "id": "test.initialdocX",
-    "title": "Index",
+    "id": "test.initialdoc",
+    "title": "test.katex",
     "filetype": "md",
-    "path": "assets/docs/test/test.index.md",
+    "path": "assets/docs/test/test.katex.md",
   },
   {
     "id": "test.index",
@@ -106,11 +106,17 @@ export const DocsList: DocMeta[] = [
     "path": "assets/docs/test/test.katex.md",
   },
   // test docs - end
+  // {
+  //   "id": "initialdoc",
+  //   "title": "Index",
+  //   "filetype": "md",
+  //   "path": "assets/docs/index.md",
+  // },
   {
     "id": "initialdoc",
-    "title": "Index",
+    "title": "text.katex",
     "filetype": "md",
-    "path": "assets/docs/index.md",
+    "path": "assets/docs/test/test.katex.md",
   },
   {
     "id": "angular-readme",

@@ -10,6 +10,7 @@ import { readSessionState, writeSessionState } from '../../../docs-viewer/sessio
 import { ScrollService } from '../../../docs-viewer/scroll.service';
 import { UldeDomHostService } from '../ulde-dom-host.service';
 import { UldeLayoutShell } from '../ulde-layout-shell/ulde-layout-shell';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
@@ -17,7 +18,8 @@ import { UldeLayoutShell } from '../ulde-layout-shell/ulde-layout-shell';
   standalone: true,
   imports: [
     // UldeDebugOverlay,
-    UldeLayoutShell
+    UldeLayoutShell,
+    MatIconModule,
   ],
   templateUrl: './ulde-viewer.html',
   styleUrls: ['./ulde-viewer.scss'],
@@ -66,10 +68,20 @@ export class UldeViewer implements AfterViewInit, OnDestroy {
     effect(() => {
       const docId = this.$inputDocId().docId;
       const destId = this.$activeDocId().destId
-      if (destId) {
-        this.effectWrapper(destId);
-      } else
+      if (!destId) {
         this.effectWrapper(docId);
+      } else {
+        this.effectWrapper(destId);
+      }
+
+      // if (destId) {
+      //   this.effectWrapper(destId);
+      // } else {
+      //   this.effectWrapper(docId);
+      // }
+
+
+      // this.effectWrapper(destId);
     });
 
   }
@@ -164,6 +176,52 @@ export class UldeViewer implements AfterViewInit, OnDestroy {
 
   linkDocId(destId: string) {
     this.$destId.set(destId);
+    this.$reload.update(n => n+1);
   }
+
+
+
+  protected toggleTheme(event: Event): void {
+    event.preventDefault();
+
+    this.$isDarkMode.set(!this.$isDarkMode());
+
+    const newTheme = this.$isDarkMode() ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    writeSessionState({ docTheme: newTheme }, this.$isBrowser());
+    // localStorage.setItem("theme", newTheme); // Save preference
+    console.log(`Log [${this.$title()}] toogleTheme theme=`, newTheme);
+    // this.restoreFromSessionState();
+    this.$reload.update(n => n + 1);
+  }
+
+  protected backToIndex(event?: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+    // this.scrollService.setPosition('initialdoc', 0, 0);
+    this.$docId.set('initialdoc');
+    // force effect to reload markdown in case the activeDocId is the same as previously
+    this.$reload.update(n => n + 1);
+
+  }
+
+  protected backToPrevious(event?: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+    // this.scrollService.setPosition('initialdoc', 0, 0);
+    const prevDocId = readSessionState(this.$isBrowser()).prevDocId;
+    if (!prevDocId) return;
+
+    this.$docId.set(prevDocId);
+    // force effect to reload markdown in case the activeDocId is the same as previously
+    this.$reload.update(n => n + 1);
+  }
+
+
+
+
+
 
 }

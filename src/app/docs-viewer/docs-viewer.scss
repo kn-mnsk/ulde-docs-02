@@ -2,15 +2,19 @@
    GLOBAL LAYOUT
 --------------------------------------------------------- */
 
-app-docs-viewer {
+// app-docs-viewer {
+.docs-viewer {
+  position:relative;
+  // display: block;
+  width: auto;
   height: auto; // full viewport
   // height: 100vh; // full viewport
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: row;
   overflow: hidden; // prevent window scroll
 }
 
-.topContainer {
+.docs_viewer_header {
   height: auto;
   // height: 15vh;
   display: flex;
@@ -24,7 +28,7 @@ app-docs-viewer {
    THEME TOGGLE + HEADER
 --------------------------------------------------------- */
 
-.themeContainer {
+.docs-viewer_theme {
   // margin-top: 10px;
   top: 10px;
   // position: relative;
@@ -154,7 +158,7 @@ app-docs-viewer {
 //   // opacity: 0;
 // }
 
-.docsViewer {
+.docs-viewer_content {
   position: relative;
   height: 85vh;
   // overflow-y: hidden; // internal scroll

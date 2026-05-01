@@ -20,8 +20,8 @@ export const KatexDomPlugin: UldeDomPlugin = {
   },
 
   async onDomInit(ctx: UldeDomPluginContext) {
-    // ctx.logger.info(`onDomInit`);
     const root = ctx.rootElement;
+    ctx.logger.info(`onDomInit before render`, root);
     renderMathInElement(root, {
       delimiters: [
         { left: "$$", right: "$$", display: true },
@@ -44,6 +44,9 @@ export const KatexDomPlugin: UldeDomPlugin = {
       strict: true,
 
     });
+
+    ctx.logger.info(`onDomInit rendered`, root);
+
   },
 
   async onDomUpdate(ctx: UldeDomPluginContext) {

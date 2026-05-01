@@ -1,27 +1,20 @@
 <!-- <p>app-ulde-viewer works</p> -->
-<app-ulde-layout-shell [$loading]="loading" [$error]="error" [$contentResult]="contentResult"  [$html]="sanitizedContent" [$inputDocId]="$inputDocId().docId" ($outputDocId)="linkDocId($event)"></app-ulde-layout-shell>
-<!-- <app-ulde-layout-shell [html]="html()"></app-ulde-layout-shell> -->
-<!--
-<div>
-  @if (loading) {
-  <div class="ulde-viewer__loading">
-    Loading…
+<div class="docs-viewer_header">
+  <div class="docs-viewer_theme">
+    <button class="mat-button themaTogglebutton" type="button" (click)="toggleTheme($event)">
+      <mat-icon class="mat-icon">{{ $isDarkMode() ? 'toggle_off' : 'toggle_on'}}</mat-icon>
+      <span class="themeTitle">Theme Color:&nbsp;{{$isDarkMode() ? 'Dark' : 'Light' }}</span>
+    </button>
   </div>
-  } @else {
 
-  @if (error) {
-  <div class="ulde-viewer__error">
-    {{ error }}
+  <div>
+    <span class="docId">ID:{{this.$activeDocId().docId}} &nbsp; ─ &nbsp; {{docTitle}}</span>
+    <button class="backToIndex" type="button" (click)="backToIndex($event)"><strong>Back To Index</strong></button>
+    <button class="backToPrevious" type="button" (click)="backToPrevious($event)"><strong>Shortcut To Previous
+        Doc</strong></button>
   </div>
-  } @else {
 
-  @if (contentResult) {
-  <div id="ulde_viewer_root" #ulde_viewer_root class="ulde-viewer__content" [innerHTML]="sanitizedContent"></div>
-  <app-ulde-debug-overlay />
-  }
+</div>
 
-  }
 
-  }
-
-</div> -->
+<app-ulde-layout-shell [$html]="sanitizedContent" [$inputDocId]="$inputDocId().docId" ($outputDocId)="linkDocId($event)"></app-ulde-layout-shell>

@@ -69,7 +69,7 @@ export class ContentEngine {
   /**
    * Convert a generic content source into a UldeDocNode.
    */
-  createDocNode(source: UldeContentSource): UldeDocNode {
+  protected createDocNode(source: UldeContentSource): UldeDocNode {
     return {
       id: source.id,
       path: source.path,

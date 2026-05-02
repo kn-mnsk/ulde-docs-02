@@ -48,6 +48,8 @@ GitHub
 
 2. [Troubleshooting Guide](#docId:doc-github-0100 "Internal Documents")
 
+3. <a href="https://github.com/mdn/dom-examples/tree/main" target="_blank" title="External Site">Dom Examples on Github</a> 
+
 Markdown Documents
 -------
 
@@ -64,6 +66,9 @@ Markdown Documents
 >- [Supplemet to marked.d.ts](#docId:doc-marked-0100 "Internal Documents")
 
 >- [Lexer and Parser](#docId:doc-marked-0200 "Internal Documents")
+
+4. <a href="https://markdown-it.github.io/markdown-it/" target="_blank" title="External Site">Markdown-it Documentation</a> 
+
 
 
 Mermaid Document

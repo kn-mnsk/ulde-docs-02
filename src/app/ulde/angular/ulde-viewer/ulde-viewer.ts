@@ -30,15 +30,21 @@ export class UldeViewer implements AfterViewInit, OnDestroy {
   protected readonly $title = signal("UdeViewer");
 
   private $isBrowser = signal<boolean>(false);
+  protected $isDarkMode = signal<boolean>(true);
 
   $inputDocId = input.required<{ docId: string, reloadCounter: number }>();
   $destId = signal<string | null>(null);
+
+  protected $docId = signal<string>('initialdoc');
   private $reload = signal(0);
   $activeDocId = computed<{ destId: string | null, reloadCounter: number }>(() => ({
     destId: this.$destId(),
     reloadCounter: this.$reload()
   }));
   // contentRendered = output<HTMLElement>();
+
+
+  protected docTitle!: string | undefined;
 
   private sanitizer = inject(DomSanitizer);
   sanitizedContent!: SafeHtml;
@@ -65,6 +71,13 @@ export class UldeViewer implements AfterViewInit, OnDestroy {
     const isBrowser = isPlatformBrowser(this.platformId);
     this.$isBrowser.set(isBrowser);
 
+
+    if (isBrowser) {
+      // this.initTheme();
+      // this.initGlobalListeners();
+      this.ensureInitialSessionState();
+    }
+
     effect(() => {
       const docId = this.$inputDocId().docId;
       const destId = this.$activeDocId().destId
@@ -84,6 +97,16 @@ export class UldeViewer implements AfterViewInit, OnDestroy {
       // this.effectWrapper(destId);
     });
 
+  }
+
+
+  private ensureInitialSessionState(): void {
+    // Ensure there is at least a baseline state
+    const current = readSessionState(this.$isBrowser());
+    writeSessionState(current, this.$isBrowser());
+
+    // ensure initializing doc theme
+    this.$isDarkMode.set((current.docTheme === 'dark')?  true : false);
   }
 
   private updateSessionState(docId: string): void {

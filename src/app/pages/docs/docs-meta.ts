@@ -299,6 +299,12 @@ export const DocsList: DocMeta[] = [
     "filetype": "md",
     "path": "assets/docs/supplements/doc-ulde2-0240.md",
   },
+  {
+    "id": "doc-ulde-ownership-map",
+    "title": "ULDE Ownership Map Graph",
+    "filetype": "md",
+    "path": "assets/docs/supplements/doc-ulde-ownership-map.md",
+  },
   // TypeScript
   {
     "id": "docs-meta",
